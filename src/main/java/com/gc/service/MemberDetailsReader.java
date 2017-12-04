@@ -14,19 +14,24 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.gc.util.Formats;
 import com.gc.vo.MemberDetail;
 
 public class MemberDetailsReader {
 
-	private static final int FLAT_NO_CELL = 0;
+	@Value("${member-details.cell.flat-no}")
+	private int flatNoCell = 0;
 
-	private static final int MOBILE_NO_CELL = 1;
+	@Value("${member-details.cell.mobile-no}")
+	private int mobileNoCell = 1;
 
-	private static final int EMAIL_ID_CELL = 2;
+	@Value("${member-details.cell.email-id}")
+	private int emailIdCell = 2;
 
-	private static final int MAX_CELL = 2;
+	@Value("${member-details.cell.max-cells}")
+	private int maxCell = 2;
 
 	public List<MemberDetail> read(File memberDetailsFile) throws FileNotFoundException, IOException {
 		List<MemberDetail> returnValue = new ArrayList<>();
@@ -49,13 +54,13 @@ public class MemberDetailsReader {
 		MemberDetail md = new MemberDetail();
 		Iterator<Cell> cellIterator = row.cellIterator();
 		int cellCounter = 0;
-		while (cellIterator.hasNext() && cellCounter < (MAX_CELL + 1)) {
+		while (cellIterator.hasNext() && cellCounter < maxCell) {
 			Cell cell = cellIterator.next();
-			if (cellCounter == FLAT_NO_CELL) {
+			if (cellCounter == flatNoCell) {
 				md.setFlatNo(readFlatNo(cell));
-			} else if (cellCounter == MOBILE_NO_CELL) {
+			} else if (cellCounter == mobileNoCell) {
 				md.setMobile(readMobileNo(cell));
-			} else if (cellCounter == EMAIL_ID_CELL) {
+			} else if (cellCounter == emailIdCell) {
 				md.setEmail(readEmailId(cell));
 			}
 			cellCounter++;

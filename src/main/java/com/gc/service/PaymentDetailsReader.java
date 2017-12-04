@@ -17,6 +17,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -25,19 +26,23 @@ import com.gc.vo.PaymentDetail;
 
 public class PaymentDetailsReader {
 
-	private static final int VOUCHER_NO_CELL = 2;
+	@Value("${payment-details.cell.voucher-no-cell}")
+	private int voucherNoCell;
 
-	private static final int RCVD_DATE_CELL = 3;
+	@Value("${payment-details.cell.rcvd-date-cell}")
+	private int rcvdDateCell;
 
-	private static final int AMOUNT_CELL = 4;
+	@Value("${payment-details.cell.amount-cell}")
+	private int amountCell;
 
-	private static final int CHEQUE_NO_CELL = 5;
+	@Value("${payment-details.cell.cheque-no-cell}")
+	private int chequeNoCell;
 
-	private static final int FLAT_NO_CELL = 15;
+	@Value("${payment-details.cell.flat-no-cell}")
+	private int flatNoCell;
 
-	private static final int BRS_DATE_CELL = 16;
-
-	private static final int MAX_CELL_READ = 16;
+	@Value("${payment-details.cell.max-cells}")
+	private int maxCellRead;
 
 	public Map<String, List<PaymentDetail>> read(File memberPaymentsFile) throws FileNotFoundException, IOException {
 		MultiValueMap<String, PaymentDetail> returnValue = new LinkedMultiValueMap<>();
@@ -62,20 +67,18 @@ public class PaymentDetailsReader {
 
 		Iterator<Cell> cellIterator = row.cellIterator();
 		int cellCounter = 0;
-		while (cellIterator.hasNext() && cellCounter < (MAX_CELL_READ + 1)) {
+		while (cellIterator.hasNext() && cellCounter < maxCellRead) {
 			Cell cell = cellIterator.next();
-			if (cellCounter == VOUCHER_NO_CELL) {
+			if (cellCounter == voucherNoCell) {
 				pd.setVoucherNo(readVoucherNo(cell));
-			} else if (cellCounter == RCVD_DATE_CELL) {
+			} else if (cellCounter == rcvdDateCell) {
 				pd.setPaymentDate(readDate(cell));
-			} else if (cellCounter == AMOUNT_CELL) {
+			} else if (cellCounter == amountCell) {
 				pd.setAmount(readAmount(cell));
-			} else if (cellCounter == CHEQUE_NO_CELL) {
+			} else if (cellCounter == chequeNoCell) {
 				pd.setCheckNo(readCheckNo(cell));
-			} else if (cellCounter == FLAT_NO_CELL) {
+			} else if (cellCounter == flatNoCell) {
 				pd.setFlatNo(readFlatNo(cell));
-			} else if (cellCounter == BRS_DATE_CELL) {
-				pd.setBrsDate(readDate(cell));
 			}
 			cellCounter++;
 		}
