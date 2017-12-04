@@ -5,7 +5,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
-@PropertySource(value = "classpath:payment-notifier.properties", ignoreResourceNotFound = true)
+@PropertySource(value = "classpath:payment-notifier.properties")
 public class Application {
 
 	public static void main(String[] args) {
