@@ -18,6 +18,7 @@ import com.gc.component.listener.ProgressListener;
 import com.gc.util.Formats;
 import com.gc.vo.Notification;
 import com.gc.vo.SmsNotificationProperties;
+import com.gc.vo.TextLocalResponse;
 import com.gc.vo.SmsNotificationProperties.BodyProperties;
 
 public class SmsNotificationsSender {
@@ -71,10 +72,13 @@ public class SmsNotificationsSender {
 				String url = buildUrl(smm);
 				SENT_NOTIF_LOGGER.info("Invoking URL {}", url);
 				try {
-					ResponseEntity<String> response = restTemplate.postForEntity(url, null, String.class);
-					SENT_NOTIF_LOGGER.info("Sent SMS: {}\nResponse: ", smm, response);
-					progressListener.sent(String.format("=====\nSMS sent to %s: %s (%d of %d)\n=====",
-							smm.get(NUMBERS_PARAM_NAME), smm.get(MESSAGE_PARAM_NAME), sendCounter, messages.size()));
+					ResponseEntity<TextLocalResponse> response = restTemplate.postForEntity(url, null,
+							TextLocalResponse.class);
+					SENT_NOTIF_LOGGER.info("Sent SMS: {}\nResponse: {}", smm, response);
+					progressListener
+							.sent(String.format("=====\nSMS sent to %s\nSMS Message:  %s\nStatus: %s (%d of %d)\n=====",
+									smm.get(NUMBERS_PARAM_NAME), smm.get(MESSAGE_PARAM_NAME),
+									response.getBody().getStatus(), sendCounter, messages.size()));
 				} catch (Exception e) {
 					progressListener.sent(String.format("Failed to send SMS to %s (%d or %d)",
 							smm.get(NUMBERS_PARAM_NAME), sendCounter, messages.size()));
