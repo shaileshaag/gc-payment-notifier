@@ -1,7 +1,5 @@
 package com.gc.vo;
 
-import org.springframework.util.StringUtils;
-
 import com.gc.util.Formats;
 
 public class Notification implements Comparable<Notification> {
@@ -17,14 +15,8 @@ public class Notification implements Comparable<Notification> {
 	private boolean sendSms;
 
 	public Object[] getTableDataArray() {
-		Object emailEntry = "No Email ID";
-		Object smsEntry = "No Mobile No.";
-		if (!StringUtils.isEmpty(memberDetail.getEmail())) {
-			emailEntry = Boolean.TRUE;
-		}
-		if (!StringUtils.isEmpty(memberDetail.getMobile())) {
-			smsEntry = Boolean.TRUE;
-		}
+		Object emailEntry = memberDetail.canSendEmail() ? Boolean.TRUE : "No Email ID";
+		Object smsEntry = memberDetail.canSendSMS() ? Boolean.TRUE : "No Mobile No.";
 		String paymentDate = null;
 		if (paymentDetail.getPaymentDate() != null) {
 			paymentDate = Formats.DATE_FORMAT.format(paymentDetail.getPaymentDate());

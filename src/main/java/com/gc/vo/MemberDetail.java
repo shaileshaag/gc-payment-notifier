@@ -1,5 +1,7 @@
 package com.gc.vo;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class MemberDetail {
 
 	private String flatNo;
@@ -30,6 +32,14 @@ public class MemberDetail {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public boolean canSendEmail() {
+		return StringUtils.isNotBlank(email);
+	}
+
+	public boolean canSendSMS() {
+		return StringUtils.isNotBlank(mobile);
 	}
 
 	@Override
