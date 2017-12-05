@@ -51,38 +51,47 @@ public class EmailNotificationsSender {
 				messages.add(message);
 			}
 		}
-		javaMailSender.setUsername(fromEmail);
-		javaMailSender.setPassword(password);
-		progressListener.setProgressMax(messages.size());
-		int sendCounter = 0;
 		if (emailNotificationProperties.isEnabled()) {
-			progressListener
-					.intimate(String.format("%d Email notifications ready to be sent. Sending...", messages.size()));
-			for (SimpleMailMessage smm : messages) {
-				try {
-					sendCounter++;
-					javaMailSender.send(smm);
-					SENT_NOTIF_LOGGER.info("Sent email: {}", smm);
-					progressListener.sent(String.format("=====\nEmail sent to %s (%d or %d) with message:\n%s\n=====",
-							smm.getTo()[0], sendCounter, messages.size(), smm.getText()));
-				} catch (Exception e) {
-					progressListener.sent(String.format("Failed to send email to %s (%d or %d): %s", smm.getTo()[0],
-							sendCounter, messages.size(), e.getCause().getMessage()));
-					LOGGER.error("Error while sending email: {}", smm, e);
-				}
-				try {
-					Thread.sleep(200);
-				} catch (InterruptedException e) {
-					LOGGER.error("Sleeping thread interrupted", e);
-				}
+			if (messages.isEmpty()) {
+				progressListener.intimate("No emails selected");
+			} else {
+				progressListener.intimate(
+						String.format("%d Email notifications ready to be sent. Sending...", messages.size()));
+				javaMailSender.setUsername(fromEmail);
+				javaMailSender.setPassword(password);
+				progressListener.setProgressMax(messages.size());
+				sendEmails(progressListener, messages);
+				javaMailSender.setUsername(null);
+				javaMailSender.setPassword(null);
 			}
 		} else {
 			progressListener.intimate("Sending email has been disabled");
 			LOGGER.info("Sending email has been disabled");
 		}
-		javaMailSender.setUsername(null);
-		javaMailSender.setPassword(null);
 		progressListener.markComplete();
+	}
+
+	private void sendEmails(ProgressListener progressListener, List<SimpleMailMessage> messages) {
+		int sendCounter = 0;
+		for (SimpleMailMessage smm : messages) {
+			try {
+				sendCounter++;
+				javaMailSender.send(smm);
+				SENT_NOTIF_LOGGER.info("Sent email: {}", smm);
+				progressListener
+						.sent(String.format("=====\nEmail sent to %s (%d or %d) with message:\n%s\n=====",
+								smm.getTo()[0], sendCounter, messages.size(), smm.getText()));
+			} catch (Exception e) {
+				progressListener.sent(String.format("Failed to send email to %s (%d or %d): %s", smm.getTo()[0],
+						sendCounter, messages.size(), e.getCause().getMessage()));
+				LOGGER.error("Error while sending email: {}", smm, e);
+			}
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				LOGGER.error("Sleeping thread interrupted", e);
+			}
+		}
 	}
 
 	private String getBody(Notification n) {

@@ -63,38 +63,46 @@ public class SmsNotificationsSender {
 			}
 		}
 		if (smsNotificationProperties.isEnabled()) {
-			progressListener.setProgressMax(messages.size());
-			progressListener
-					.intimate(String.format("%d SMS notifications ready to be sent. Sending...", messages.size()));
-			int sendCounter = 0;
-			for (Map<String, String> smm : messages) {
-				sendCounter++;
-				String url = buildUrl(smm);
-				SENT_NOTIF_LOGGER.info("Invoking URL {}", url);
-				try {
-					ResponseEntity<TextLocalResponse> response = restTemplate.postForEntity(url, null,
-							TextLocalResponse.class);
-					SENT_NOTIF_LOGGER.info("Sent SMS: {}\nResponse: {}", smm, response);
-					progressListener
-							.sent(String.format("=====\nSMS sent to %s\nSMS Message:  %s\nStatus: %s (%d of %d)\n=====",
-									smm.get(NUMBERS_PARAM_NAME), smm.get(MESSAGE_PARAM_NAME),
-									response.getBody().getStatus(), sendCounter, messages.size()));
-				} catch (Exception e) {
-					progressListener.sent(String.format("Failed to send SMS to %s (%d or %d)",
-							smm.get(NUMBERS_PARAM_NAME), sendCounter, messages.size()));
-					SENT_NOTIF_LOGGER.error("Error while invoking SMS URL: {}", url, e);
-				}
-				try {
-					Thread.sleep(200);
-				} catch (InterruptedException e) {
-					LOGGER.error("Sleeping thread interrupted", e);
-				}
+			if (messages.isEmpty()) {
+				progressListener.intimate("No SMS selected");
+			} else {
+				progressListener.setProgressMax(messages.size());
+				progressListener
+						.intimate(String.format("%d SMS notifications ready to be sent. Sending...", messages.size()));
+				sendSms(progressListener, messages);
 			}
 		} else {
 			progressListener.intimate("Sending SMS has been disabled");
 			LOGGER.info("Sending SMS has been disabled");
 		}
 		progressListener.markComplete();
+	}
+
+	private void sendSms(ProgressListener progressListener, List<Map<String, String>> messages) {
+		int sendCounter = 0;
+		for (Map<String, String> smm : messages) {
+			sendCounter++;
+			String url = buildUrl(smm);
+			SENT_NOTIF_LOGGER.info("Invoking URL {}", url);
+			try {
+				ResponseEntity<TextLocalResponse> response = restTemplate.postForEntity(url, null,
+						TextLocalResponse.class);
+				SENT_NOTIF_LOGGER.info("Sent SMS: {}\nResponse: {}", smm, response);
+				progressListener.sent(
+						String.format("=====\nSMS sent to %s\nSMS Message:  %s\nStatus: %s (%d of %d)\n=====",
+								smm.get(NUMBERS_PARAM_NAME), smm.get(MESSAGE_PARAM_NAME),
+								response.getBody().getStatus(), sendCounter, messages.size()));
+			} catch (Exception e) {
+				progressListener.sent(String.format("Failed to send SMS to %s (%d or %d)",
+						smm.get(NUMBERS_PARAM_NAME), sendCounter, messages.size()));
+				SENT_NOTIF_LOGGER.error("Error while invoking SMS URL: {}", url, e);
+			}
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				LOGGER.error("Sleeping thread interrupted", e);
+			}
+		}
 	}
 
 	private String buildSms(Notification n) throws UnsupportedEncodingException {
