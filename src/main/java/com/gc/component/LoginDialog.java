@@ -21,21 +21,32 @@ public class LoginDialog extends JDialog implements ActionListener {
 
 	private static final String CANCEL = "Cancel";
 
-	private JTextField tfUsername;
+	private JTextField emailUsername;
 
-	private JPasswordField pfPassword;
+	private JPasswordField emailPassword;
+
+	private JTextField smsUsername;
+
+	private JPasswordField smsPassword;
 
 	private boolean succeeded;
 
 	public LoginDialog(JFrame parentFrame) {
 		super(parentFrame, "Login", true);
 
-		JLabel lbUsername = new JLabel("Email Id: ");
-		tfUsername = new JTextField(20);
-		JLabel lbEmail = new JLabel("@gmail.com");
-		JLabel lbPassword = new JLabel("Password: ");
-		pfPassword = new JPasswordField(20);
+		JLabel emailUsernameLbl = new JLabel("Email Id:            ");
+		emailUsername = new JTextField(20);
+		JLabel emailDomainLabel = new JLabel("@gmail.com");
+		JLabel emailPasswordLabel = new JLabel("Password:         ");
+		emailPassword = new JPasswordField(20);
 		JLabel emptyLbl = new JLabel("                   ");
+
+		JLabel smsUsernameLbl = new JLabel("SMS User Id:      ");
+		smsUsername = new JTextField(20);
+		JLabel smsPasswordLabel = new JLabel("SMS Password:  ");
+		smsPassword = new JPasswordField(20);
+		JLabel emptyLbl2 = new JLabel("                   ");
+		JLabel emptyLbl3 = new JLabel("                   ");
 
 		JButton btnLogin = new JButton(SEND);
 		btnLogin.addActionListener(this);
@@ -48,17 +59,25 @@ public class LoginDialog extends JDialog implements ActionListener {
 		contentPanel.setLayout(groupLayout);
 
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup().addGap(10).addComponent(lbUsername).addGap(10, 20, 100)
-						.addComponent(tfUsername).addComponent(lbEmail).addGap(30))
-				.addGroup(groupLayout.createSequentialGroup().addGap(10).addComponent(lbPassword).addGap(10, 20, 100)
-						.addComponent(pfPassword).addComponent(emptyLbl).addGap(30))
+				.addGroup(groupLayout.createSequentialGroup().addGap(10).addComponent(emailUsernameLbl)
+						.addComponent(emailUsername).addComponent(emailDomainLabel).addGap(30))
+				.addGroup(groupLayout.createSequentialGroup().addGap(10).addComponent(emailPasswordLabel)
+						.addComponent(emailPassword).addComponent(emptyLbl).addGap(30))
+				.addGroup(groupLayout.createSequentialGroup().addGap(10).addComponent(smsUsernameLbl)
+						.addComponent(smsUsername).addGap(30).addComponent(emptyLbl3))
+				.addGroup(groupLayout.createSequentialGroup().addGap(10).addComponent(smsPasswordLabel)
+						.addComponent(smsPassword).addComponent(emptyLbl2).addGap(30))
 				.addGroup(
 						groupLayout.createSequentialGroup().addGap(30).addComponent(btnLogin).addGap(30).addComponent(btnCancel)));
 		groupLayout.setVerticalGroup(groupLayout.createSequentialGroup()
-				.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(lbUsername)
-						.addComponent(tfUsername).addComponent(lbEmail))
-				.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(lbPassword)
-						.addComponent(pfPassword).addComponent(emptyLbl))
+				.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(emailUsernameLbl)
+						.addComponent(emailUsername).addComponent(emailDomainLabel))
+				.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(emailPasswordLabel)
+						.addComponent(emailPassword).addComponent(emptyLbl))
+				.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(smsUsernameLbl)
+						.addComponent(smsUsername).addComponent(emptyLbl3))
+				.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(smsPasswordLabel)
+						.addComponent(smsPassword).addComponent(emptyLbl2))
 				.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(btnLogin)
 						.addComponent(btnCancel)));
 		pack();
@@ -71,7 +90,7 @@ public class LoginDialog extends JDialog implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		JButton source = (JButton) e.getSource();
 		if (source.getText().equals(SEND)) {
-			if (StringUtils.isEmpty(getUsername()) || StringUtils.isEmpty(getPassword())) {
+			if (StringUtils.isEmpty(getEmailUsername()) || StringUtils.isEmpty(getEmailPassword())) {
 				JOptionPane.showMessageDialog(getParent(), "No username of password", "Alert",
 						JOptionPane.WARNING_MESSAGE);
 			} else {
@@ -83,12 +102,20 @@ public class LoginDialog extends JDialog implements ActionListener {
 		}
 	}
 
-	public String getUsername() {
-		return tfUsername.getText();
+	public String getEmailUsername() {
+		return emailUsername.getText();
 	}
 
-	public String getPassword() {
-		return new String(pfPassword.getPassword());
+	public String getEmailPassword() {
+		return new String(emailPassword.getPassword());
+	}
+
+	public String getSmsUsername() {
+		return smsUsername.getText();
+	}
+
+	public String getSmsPassword() {
+		return new String(smsPassword.getPassword());
 	}
 
 	public boolean isSucceeded() {

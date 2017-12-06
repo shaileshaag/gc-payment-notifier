@@ -55,9 +55,9 @@ public class NotificationPanelListener implements TableModelListener, ActionList
 				ProgressListener emailProgressListener = snp.createProgressListener("Sent Emails");
 				ProgressListener smsProgressListener = snp.createProgressListener("Sent SMS");
 				Runnable emailSenderRunnable = () -> {
-					emailNotificationSender.send(ld.getUsername(), ld.getPassword(), notifications,
+					emailNotificationSender.send(ld.getEmailUsername(), ld.getEmailPassword(), notifications,
 							emailProgressListener);
-					smsNotificationSender.send(notifications, smsProgressListener);
+					smsNotificationSender.send(ld.getSmsUsername(), ld.getSmsPassword(), notifications, smsProgressListener);
 				};
 				snp.addProcessOnLoad(emailSenderRunnable);
 				snp.init();

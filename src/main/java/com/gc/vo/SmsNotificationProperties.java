@@ -4,11 +4,13 @@ public class SmsNotificationProperties {
 
 	private boolean enabled;
 
-	private String textLocalUrl;
-
-	private String apiKey;
+	private String businessMantraUrl;
 
 	private String sender;
+
+	private String flashParam;
+	
+	private String gwidParam;
 
 	private BodyProperties body;
 
@@ -28,28 +30,36 @@ public class SmsNotificationProperties {
 		this.body = body;
 	}
 
-	public String getTextLocalUrl() {
-		return textLocalUrl;
-	}
-
-	public void setTextLocalUrl(String textLocalUrl) {
-		this.textLocalUrl = textLocalUrl;
-	}
-
-	public String getApiKey() {
-		return apiKey;
-	}
-
-	public void setApiKey(String apiKey) {
-		this.apiKey = apiKey;
-	}
-
 	public String getSender() {
 		return sender;
 	}
 
 	public void setSender(String sender) {
 		this.sender = sender;
+	}
+
+	public String getBusinessMantraUrl() {
+		return businessMantraUrl;
+	}
+
+	public void setBusinessMantraUrl(String businessMantraUrl) {
+		this.businessMantraUrl = businessMantraUrl;
+	}
+
+	public String getFlashParam() {
+		return flashParam;
+	}
+
+	public void setFlashParam(String flashParam) {
+		this.flashParam = flashParam;
+	}
+
+	public String getGwidParam() {
+		return gwidParam;
+	}
+
+	public void setGwidParam(String gwidParam) {
+		this.gwidParam = gwidParam;
 	}
 
 	public static class BodyProperties {
