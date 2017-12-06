@@ -12,9 +12,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.gc.provider.FileProvider;
 
-public class MemberFileLoaderImpl implements FileProvider, ComponentGroupPanel, ActionListener {
+public class FileLoaderImpl implements FileProvider, ComponentGroupPanel, ActionListener {
 
 	private final String labelName;
 
@@ -32,16 +34,31 @@ public class MemberFileLoaderImpl implements FileProvider, ComponentGroupPanel, 
 
 	private JFrame parentFrame;
 
-	public MemberFileLoaderImpl(String labelName, String buttonText) {
+	public FileLoaderImpl(String labelName, String buttonText) {
+		this(labelName, buttonText, null);
+	}
+
+	public FileLoaderImpl(String labelName, String buttonText, String defaultPath) {
 		this.labelName = labelName;
 		this.buttonText = buttonText;
+		if (StringUtils.isNotBlank(defaultPath)) {
+			File defaultFile = new File(defaultPath);
+			if (defaultFile.exists() && defaultFile.isFile()) {
+				file = defaultFile;
+			}
+		}
 	}
 
 	public void init() {
 		fileNameLabel = new JLabel(labelName);
 		fileLoadButton = new JButton(buttonText);
 		fileLoadButton.addActionListener(this);
-		fileLabel = new JLabel();
+		fileLabel = null;
+		if (file == null) {
+			fileLabel = new JLabel();
+		} else {
+			fileLabel = new JLabel(file.getAbsolutePath());
+		}
 		fileChooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("xls Files", "xls");
 		fileChooser.setFileFilter(filter);

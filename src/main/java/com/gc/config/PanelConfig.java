@@ -1,6 +1,7 @@
 package com.gc.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.gc.component.DatePickerPanel;
 import com.gc.component.MainFrame;
-import com.gc.component.MemberFileLoaderImpl;
+import com.gc.component.FileLoaderImpl;
 import com.gc.component.NotificationPanel;
 import com.gc.service.EmailNotificationsSender;
 import com.gc.service.MemberDetailsReader;
@@ -24,15 +25,18 @@ public class PanelConfig {
 
 	@Autowired
 	private JavaMailSenderImpl javaMailSender;
-	
+
+	@Value("${default.member.file-path:}")
+	private String defaultMemberDetailsFilePath;
+
 	@Bean(initMethod = "init")
-	public MemberFileLoaderImpl memberDetailsFilePanel() {
-		return new MemberFileLoaderImpl("Member Details File  ", "Load");
+	public FileLoaderImpl memberDetailsFilePanel() {
+		return new FileLoaderImpl("Member Details File  ", "Load", defaultMemberDetailsFilePath);
 	}
 
 	@Bean(initMethod = "init")
-	public MemberFileLoaderImpl memberPaymentsFilePanel() {
-		return new MemberFileLoaderImpl("Member Payment File", "Load");
+	public FileLoaderImpl memberPaymentsFilePanel() {
+		return new FileLoaderImpl("Member Payment File", "Load");
 	}
 
 	@Bean(initMethod = "init")
