@@ -67,13 +67,13 @@ public class LoginDialog extends JDialog implements ActionListener {
 						.addComponent(smsUsername).addGap(30).addComponent(emptyLbl3))
 				.addGroup(groupLayout.createSequentialGroup().addGap(10).addComponent(smsPasswordLabel)
 						.addComponent(smsPassword).addComponent(emptyLbl2).addGap(30))
-				.addGroup(
-						groupLayout.createSequentialGroup().addGap(30).addComponent(btnLogin).addGap(30).addComponent(btnCancel)));
+				.addGroup(groupLayout.createSequentialGroup().addGap(30).addComponent(btnLogin).addGap(30)
+						.addComponent(btnCancel)));
 		groupLayout.setVerticalGroup(groupLayout.createSequentialGroup()
 				.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(emailUsernameLbl)
 						.addComponent(emailUsername).addComponent(emailDomainLabel))
-				.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(emailPasswordLabel)
-						.addComponent(emailPassword).addComponent(emptyLbl))
+				.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(emailPasswordLabel).addComponent(emailPassword).addComponent(emptyLbl))
 				.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(smsUsernameLbl)
 						.addComponent(smsUsername).addComponent(emptyLbl3))
 				.addGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(smsPasswordLabel)
@@ -91,7 +91,10 @@ public class LoginDialog extends JDialog implements ActionListener {
 		JButton source = (JButton) e.getSource();
 		if (source.getText().equals(SEND)) {
 			if (StringUtils.isEmpty(getEmailUsername()) || StringUtils.isEmpty(getEmailPassword())) {
-				JOptionPane.showMessageDialog(getParent(), "No username of password", "Alert",
+				JOptionPane.showMessageDialog(getParent(), "No Email username or password", "Alert",
+						JOptionPane.WARNING_MESSAGE);
+			} else if (StringUtils.isEmpty(getSmsUsername()) || StringUtils.isEmpty(getSmsPassword())) {
+				JOptionPane.showMessageDialog(getParent(), "No SMS username or password", "Alert",
 						JOptionPane.WARNING_MESSAGE);
 			} else {
 				dispose();
