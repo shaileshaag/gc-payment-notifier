@@ -44,6 +44,8 @@ public final class Formats {
 
 	private static final String TEMPLATE_RECEIVED_DATE = "received-date";
 
+	private static final String TEMPLATE_VOUCHER_NO = "voucher-no";
+
 	public static Date interpretDate(String dateStr) {
 		String trimmedDateStr = dateStr.trim();
 		Date d = matchAndBuildDate(trimmedDateStr, INPUT_DATE_PATTERN_1, INPUT_DATE_FORMATTER_1);
@@ -85,6 +87,7 @@ public final class Formats {
 		valueMap.put(TEMPLATE_FLAT_NO, n.getMemberDetail().getFlatNo());
 		valueMap.put(TEMPLATE_PAYMENT_AMOUNT, formattedAmount);
 		valueMap.put(TEMPLATE_RECEIVED_DATE, formattedRecDate);
+		valueMap.put(TEMPLATE_VOUCHER_NO, String.valueOf(n.getPaymentDetail().getVoucherNo()));
 		return new StrSubstitutor(valueMap, "$$[", "]");
 	}
 
