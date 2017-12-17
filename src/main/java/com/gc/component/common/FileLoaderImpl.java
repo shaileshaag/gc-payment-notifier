@@ -13,10 +13,14 @@ import javax.swing.JLabel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.gc.provider.FileProvider;
 
 public class FileLoaderImpl implements FileProvider, ComponentGroupPanel, ActionListener {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(FileLoaderImpl.class);
 
 	private final String labelName;
 
@@ -42,9 +46,13 @@ public class FileLoaderImpl implements FileProvider, ComponentGroupPanel, Action
 		this.labelName = labelName;
 		this.buttonText = buttonText;
 		if (StringUtils.isNotBlank(defaultPath)) {
+			LOGGER.info("Trying to load default file path '{}' for label '{}'", defaultPath, labelName);
 			File defaultFile = new File(defaultPath);
 			if (defaultFile.exists() && defaultFile.isFile()) {
 				file = defaultFile;
+				LOGGER.info("Default File '{}' found for label '{}'", defaultFile.getAbsolutePath(), labelName);
+			} else {
+				LOGGER.warn("Default file '{}' not found for label '{}'", defaultFile.getAbsolutePath(), labelName);
 			}
 		}
 	}

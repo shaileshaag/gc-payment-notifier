@@ -42,28 +42,6 @@ public class PanelConfig {
 		return new FileLoaderImpl("Member Details File  ", "Load", defaultMemberDetailsFilePath);
 	}
 
-	@Bean(initMethod = "init")
-	public FileLoaderImpl memberPaymentsFilePanel() {
-		return new FileLoaderImpl("Member Payment File", "Load");
-	}
-
-	@Bean(initMethod = "init")
-	public DatePickerPanel fromDatePickerPanel() {
-		return new DatePickerPanel("dd-MMM-yyyy", "Notifications from");
-	}
-
-	@Bean(initMethod = "init")
-	public NotificationPanel paymentNotificationPanel() {
-		return new NotificationPanel("Send Notifications", emailNotificationSender(), smsNotificationSender(),
-				new PaymentNotificationTableColCheckboxDecider(), PaymentNotification.HEADERS);
-	}
-
-	@Bean
-	public PaymentNotificationsLoader notificationsLoader() {
-		return new PaymentNotificationsLoader(memberDetailsFilePanel(), memberPaymentsFilePanel(), fromDatePickerPanel(),
-				paymentNotificationPanel(), memberDetailsReader(), paymentDetailsReader());
-	}
-
 	@Bean
 	public EmailNotificationsSender emailNotificationSender() {
 		return new EmailNotificationsSender(emailNotificationProperties(), javaMailSender);
@@ -72,35 +50,6 @@ public class PanelConfig {
 	@Bean
 	public SmsNotificationsSender smsNotificationSender() {
 		return new SmsNotificationsSender(smsNotificationProperties(), smsRestTemplate());
-	}
-
-	@Bean
-	public MemberDetailsReader memberDetailsReader() {
-		return new MemberDetailsReader();
-	}
-
-	@Bean
-	public PaymentDetailsReader paymentDetailsReader() {
-		return new PaymentDetailsReader();
-	}
-
-	@Bean(initMethod = "init")
-	public MainFrame mainFrame() {
-		List<NotificationTab> notificationTabs = new ArrayList<>();
-		notificationTabs.add(paymentNotificationTab());
-		notificationTabs.add(pendingNotificationTab());
-		return new MainFrame(memberDetailsFilePanel(), notificationTabs);
-	}
-
-	@Bean(initMethod = "init")
-	public NotificationTab paymentNotificationTab() {
-		return new PaymentNotificationTab(memberPaymentsFilePanel(), fromDatePickerPanel(), paymentNotificationPanel(),
-				notificationsLoader());
-	}
-
-	@Bean(initMethod = "init")
-	public NotificationTab pendingNotificationTab() {
-		return new PendingNotificationTab();
 	}
 
 	@Bean
@@ -118,6 +67,57 @@ public class PanelConfig {
 	@Bean
 	public RestTemplate smsRestTemplate() {
 		return new RestTemplate();
+	}
+
+	@Bean
+	public MemberDetailsReader memberDetailsReader() {
+		return new MemberDetailsReader();
+	}
+
+	@Bean
+	public PaymentDetailsReader paymentDetailsReader() {
+		return new PaymentDetailsReader();
+	}
+
+	@Bean(initMethod = "init")
+	public FileLoaderImpl memberPaymentsFilePanel() {
+		return new FileLoaderImpl("Member Payment File", "Load");
+	}
+
+	@Bean(initMethod = "init")
+	public DatePickerPanel fromDatePickerPanel() {
+		return new DatePickerPanel("dd-MMM-yyyy", "Notifications from");
+	}
+
+	@Bean(initMethod = "init")
+	public NotificationPanel paymentNotificationPanel() {
+		return new NotificationPanel("Send Notifications", emailNotificationSender(), smsNotificationSender(),
+				new PaymentNotificationTableColCheckboxDecider(), PaymentNotification.HEADERS);
+	}
+
+	@Bean
+	public PaymentNotificationsLoader paymentNotificationsLoader() {
+		return new PaymentNotificationsLoader(memberDetailsFilePanel(), memberPaymentsFilePanel(), fromDatePickerPanel(),
+				paymentNotificationPanel(), memberDetailsReader(), paymentDetailsReader());
+	}
+
+	@Bean(initMethod = "init")
+	public NotificationTab paymentNotificationTab() {
+		return new PaymentNotificationTab(memberPaymentsFilePanel(), fromDatePickerPanel(), paymentNotificationPanel(),
+				paymentNotificationsLoader());
+	}
+
+	@Bean(initMethod = "init")
+	public NotificationTab pendingNotificationTab() {
+		return new PendingNotificationTab();
+	}
+
+	@Bean(initMethod = "init")
+	public MainFrame mainFrame() {
+		List<NotificationTab> notificationTabs = new ArrayList<>();
+		notificationTabs.add(paymentNotificationTab());
+		notificationTabs.add(pendingNotificationTab());
+		return new MainFrame(memberDetailsFilePanel(), notificationTabs);
 	}
 
 }
