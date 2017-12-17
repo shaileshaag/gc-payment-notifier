@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.gc.component.common.ComponentGroupPanel;
 import com.gc.component.common.NotificationTab;
-import com.gc.service.NotificationsLoader;
+import com.gc.service.PaymentNotificationsLoader;
 
 public class PaymentNotificationTab extends NotificationTab implements ActionListener {
 
@@ -29,10 +29,10 @@ public class PaymentNotificationTab extends NotificationTab implements ActionLis
 
 	private final ComponentGroupPanel notificationPanel;
 
-	private final NotificationsLoader notificationsLoader;
+	private final PaymentNotificationsLoader notificationsLoader;
 
 	public PaymentNotificationTab(ComponentGroupPanel memberPaymentsFilePanel, ComponentGroupPanel fromDatePickerPanel,
-			ComponentGroupPanel notificationPanel, NotificationsLoader notificationsLoader) {
+			ComponentGroupPanel notificationPanel, PaymentNotificationsLoader notificationsLoader) {
 		super();
 		this.memberPaymentsFilePanel = memberPaymentsFilePanel;
 		this.fromDatePickerPanel = fromDatePickerPanel;

@@ -18,7 +18,7 @@ import com.gc.vo.MemberDetail;
 import com.gc.vo.PaymentDetail;
 import com.gc.vo.PaymentNotification;
 
-public class NotificationsLoader {
+public class PaymentNotificationsLoader {
 
 	private final FileProvider memberDetailsFilePanel;
 
@@ -32,7 +32,7 @@ public class NotificationsLoader {
 
 	private final PaymentDetailsReader paymentDetailsReader;
 
-	public NotificationsLoader(FileProvider memberDetailsFilePanel, FileProvider memberPaymentsFilePanel,
+	public PaymentNotificationsLoader(FileProvider memberDetailsFilePanel, FileProvider memberPaymentsFilePanel,
 			DateProvider fromDatePickerPanel, NotificationReceiver notificationPanel,
 			MemberDetailsReader memberDetailsReader, PaymentDetailsReader paymentDetailsReader) {
 		this.memberDetailsFilePanel = memberDetailsFilePanel;

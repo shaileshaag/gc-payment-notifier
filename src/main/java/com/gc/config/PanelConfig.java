@@ -21,7 +21,7 @@ import com.gc.component.payment.PaymentNotificationTableColCheckboxDecider;
 import com.gc.component.pending.PendingNotificationTab;
 import com.gc.service.EmailNotificationsSender;
 import com.gc.service.MemberDetailsReader;
-import com.gc.service.NotificationsLoader;
+import com.gc.service.PaymentNotificationsLoader;
 import com.gc.service.PaymentDetailsReader;
 import com.gc.service.SmsNotificationsSender;
 import com.gc.vo.EmailNotificationProperties;
@@ -59,8 +59,8 @@ public class PanelConfig {
 	}
 
 	@Bean
-	public NotificationsLoader notificationsLoader() {
-		return new NotificationsLoader(memberDetailsFilePanel(), memberPaymentsFilePanel(), fromDatePickerPanel(),
+	public PaymentNotificationsLoader notificationsLoader() {
+		return new PaymentNotificationsLoader(memberDetailsFilePanel(), memberPaymentsFilePanel(), fromDatePickerPanel(),
 				paymentNotificationPanel(), memberDetailsReader(), paymentDetailsReader());
 	}
 
