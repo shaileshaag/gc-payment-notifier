@@ -12,7 +12,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import com.gc.component.common.LoginDialog;
-import com.gc.component.payment.SendNotificationsProgress;
+import com.gc.component.common.SendNotificationsProgress;
 import com.gc.service.EmailNotificationsSender;
 import com.gc.service.SmsNotificationsSender;
 import com.gc.vo.Notification;

@@ -1,4 +1,4 @@
-package com.gc.component.payment;
+package com.gc.component.common;
 
 import java.awt.Container;
 import java.awt.Dimension;
