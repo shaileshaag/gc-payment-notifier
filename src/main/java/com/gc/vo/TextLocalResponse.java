@@ -139,8 +139,8 @@ public class TextLocalResponse {
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
-			builder.append(" [num_parts=").append(num_parts).append(", sender=").append(sender)
-					.append(", content=").append(content).append("]");
+			builder.append(" [num_parts=").append(num_parts).append(", sender=").append(sender).append(", content=")
+					.append(content).append("]");
 			return builder.toString();
 		}
 

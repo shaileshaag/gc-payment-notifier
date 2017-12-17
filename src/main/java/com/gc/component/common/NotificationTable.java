@@ -12,7 +12,8 @@ public class NotificationTable extends JTable {
 
 	private Class editingClass;
 
-	public NotificationTable(NotificationTableColumnCheckboxDecider checkboxDecider, final Object[][] notificationsData, Object[] headers) {
+	public NotificationTable(NotificationTableColumnCheckboxDecider checkboxDecider, final Object[][] notificationsData,
+			Object[] headers) {
 		super(notificationsData, headers);
 		putClientProperty("terminateEditOnFocusLost", true);
 		this.checkboxDecider = checkboxDecider;

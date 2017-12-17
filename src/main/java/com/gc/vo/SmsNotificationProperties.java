@@ -9,7 +9,7 @@ public class SmsNotificationProperties {
 	private String sender;
 
 	private String flashParam;
-	
+
 	private String gwidParam;
 
 	private BodyProperties body;

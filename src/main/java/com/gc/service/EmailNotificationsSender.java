@@ -78,9 +78,8 @@ public class EmailNotificationsSender {
 				sendCounter++;
 				javaMailSender.send(smm);
 				SENT_NOTIF_LOGGER.info("Sent email: {}", smm);
-				progressListener
-						.sent(String.format("=====\nEmail sent to %s (%d or %d) with message:\n%s\n=====",
-								smm.getTo()[0], sendCounter, messages.size(), smm.getText()));
+				progressListener.sent(String.format("=====\nEmail sent to %s (%d or %d) with message:\n%s\n=====",
+						smm.getTo()[0], sendCounter, messages.size(), smm.getText()));
 			} catch (Exception e) {
 				progressListener.sent(String.format("Failed to send email to %s (%d or %d): %s", smm.getTo()[0],
 						sendCounter, messages.size(), e.getCause().getMessage()));

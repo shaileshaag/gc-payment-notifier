@@ -2,19 +2,15 @@ package com.gc.component.pending;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.gc.component.common.NotificationTab;
-import com.gc.service.NotificationsLoader;
 
 public class PendingNotificationTab extends NotificationTab implements ActionListener {
 
@@ -33,27 +29,28 @@ public class PendingNotificationTab extends NotificationTab implements ActionLis
 		JButton loadNotificationsButton = new JButton("Load Notifications");
 		loadNotificationsButton.addActionListener(this);
 
-//		tabbedGroupLayout.setHorizontalGroup(tabbedGroupLayout.createParallelGroup(Alignment.LEADING)
-//				.addGroup(memberPaymentsFilePanel.getHorizontalComponents(tabbedGroupLayout))
-//				.addGroup(fromDatePickerPanel.getHorizontalComponents(tabbedGroupLayout))
-//				.addGroup(tabbedGroupLayout.createSequentialGroup().addGap(30).addComponent(loadNotificationsButton))
-//				.addGroup(notificationPanel.getHorizontalComponents(tabbedGroupLayout)));
-//		tabbedGroupLayout.setVerticalGroup(tabbedGroupLayout.createSequentialGroup()
-//				.addGroup(memberPaymentsFilePanel.getVerticalComponents(tabbedGroupLayout)).addGap(10)
-//				.addGroup(fromDatePickerPanel.getVerticalComponents(tabbedGroupLayout)).addGap(10)
-//				.addComponent(loadNotificationsButton).addGap(10)
-//				.addGroup(notificationPanel.getVerticalComponents(tabbedGroupLayout)));
+		// tabbedGroupLayout.setHorizontalGroup(tabbedGroupLayout.createParallelGroup(Alignment.LEADING)
+		// .addGroup(memberPaymentsFilePanel.getHorizontalComponents(tabbedGroupLayout))
+		// .addGroup(fromDatePickerPanel.getHorizontalComponents(tabbedGroupLayout))
+		// .addGroup(tabbedGroupLayout.createSequentialGroup().addGap(30).addComponent(loadNotificationsButton))
+		// .addGroup(notificationPanel.getHorizontalComponents(tabbedGroupLayout)));
+		// tabbedGroupLayout.setVerticalGroup(tabbedGroupLayout.createSequentialGroup()
+		// .addGroup(memberPaymentsFilePanel.getVerticalComponents(tabbedGroupLayout)).addGap(10)
+		// .addGroup(fromDatePickerPanel.getVerticalComponents(tabbedGroupLayout)).addGap(10)
+		// .addComponent(loadNotificationsButton).addGap(10)
+		// .addGroup(notificationPanel.getVerticalComponents(tabbedGroupLayout)));
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-//		try {
-//			//notificationsLoader.load();
-//		} catch (IllegalArgumentException | IOException iae) {
-//			LOGGER.error("Error while loading notifications", iae);
-//			JOptionPane.showMessageDialog(this, iae.getMessage(), "Payment Notifications Load Warning",
-//					JOptionPane.ERROR_MESSAGE);
-//		}
+		// try {
+		// //notificationsLoader.load();
+		// } catch (IllegalArgumentException | IOException iae) {
+		// LOGGER.error("Error while loading notifications", iae);
+		// JOptionPane.showMessageDialog(this, iae.getMessage(), "Payment
+		// Notifications Load Warning",
+		// JOptionPane.ERROR_MESSAGE);
+		// }
 	}
 
 	public String getTabName() {
@@ -62,9 +59,9 @@ public class PendingNotificationTab extends NotificationTab implements ActionLis
 
 	@Override
 	public void setParentFrame(JFrame parentFrame) {
-//		memberPaymentsFilePanel.setParentFrame(parentFrame);
-//		fromDatePickerPanel.setParentFrame(parentFrame);
-//		notificationPanel.setParentFrame(parentFrame);
+		// memberPaymentsFilePanel.setParentFrame(parentFrame);
+		// fromDatePickerPanel.setParentFrame(parentFrame);
+		// notificationPanel.setParentFrame(parentFrame);
 	}
 
 }

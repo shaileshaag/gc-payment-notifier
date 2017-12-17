@@ -86,8 +86,7 @@ public class BusinessMantraResponse {
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
-			builder.append(" [Number=").append(Number).append(", MessageParts=").append(MessageParts)
-					.append("]");
+			builder.append(" [Number=").append(Number).append(", MessageParts=").append(MessageParts).append("]");
 			return builder.toString();
 		}
 
@@ -131,8 +130,8 @@ public class BusinessMantraResponse {
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
-			builder.append(" [MsgId=").append(MsgId).append(", PartId=").append(PartId).append(", Text=")
-					.append(Text).append("]");
+			builder.append(" [MsgId=").append(MsgId).append(", PartId=").append(PartId).append(", Text=").append(Text)
+					.append("]");
 			return builder.toString();
 		}
 

@@ -4,23 +4,15 @@ import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.HeadlessException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.gc.component.common.ComponentGroupPanel;
 import com.gc.component.common.NotificationTab;
-import com.gc.service.NotificationsLoader;
 
 public class MainFrame extends JFrame {
 
