@@ -1,5 +1,8 @@
 package com.gc.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -8,10 +11,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.client.RestTemplate;
 
-import com.gc.component.DatePickerPanel;
 import com.gc.component.MainFrame;
-import com.gc.component.FileLoaderImpl;
-import com.gc.component.NotificationPanel;
+import com.gc.component.common.DatePickerPanel;
+import com.gc.component.common.FileLoaderImpl;
+import com.gc.component.common.NotificationPanel;
+import com.gc.component.common.NotificationTab;
+import com.gc.component.payment.PaymentNotificationTab;
+import com.gc.component.payment.PaymentNotificationTableColCheckboxDecider;
+import com.gc.component.pending.PendingNotificationTab;
 import com.gc.service.EmailNotificationsSender;
 import com.gc.service.MemberDetailsReader;
 import com.gc.service.NotificationsLoader;
@@ -45,14 +52,15 @@ public class PanelConfig {
 	}
 
 	@Bean(initMethod = "init")
-	public NotificationPanel notificationPanel() {
-		return new NotificationPanel("Send Notifications", emailNotificationSender(), smsNotificationSender());
+	public NotificationPanel paymentNotificationPanel() {
+		return new NotificationPanel("Send Notifications", emailNotificationSender(), smsNotificationSender(),
+				new PaymentNotificationTableColCheckboxDecider());
 	}
 
 	@Bean
 	public NotificationsLoader notificationsLoader() {
 		return new NotificationsLoader(memberDetailsFilePanel(), memberPaymentsFilePanel(), fromDatePickerPanel(),
-				notificationPanel(), memberDetailsReader(), paymentDetailsReader());
+				paymentNotificationPanel(), memberDetailsReader(), paymentDetailsReader());
 	}
 
 	@Bean
@@ -77,8 +85,21 @@ public class PanelConfig {
 
 	@Bean(initMethod = "init")
 	public MainFrame mainFrame() {
-		return new MainFrame(memberDetailsFilePanel(), memberPaymentsFilePanel(), fromDatePickerPanel(),
-				notificationPanel(), notificationsLoader());
+		List<NotificationTab> notificationTabs = new ArrayList<>();
+		notificationTabs.add(paymentNotificationTab());
+		notificationTabs.add(pendingNotificationTab());
+		return new MainFrame(memberDetailsFilePanel(), notificationTabs);
+	}
+
+	@Bean(initMethod = "init")
+	public NotificationTab paymentNotificationTab() {
+		return new PaymentNotificationTab(memberPaymentsFilePanel(), fromDatePickerPanel(), paymentNotificationPanel(),
+				notificationsLoader());
+	}
+
+	@Bean(initMethod = "init")
+	public NotificationTab pendingNotificationTab() {
+		return new PendingNotificationTab();
 	}
 
 	@Bean

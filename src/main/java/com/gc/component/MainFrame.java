@@ -7,42 +7,34 @@ import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.GroupLayout;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gc.component.common.ComponentGroupPanel;
+import com.gc.component.common.NotificationTab;
 import com.gc.service.NotificationsLoader;
 
-public class MainFrame extends JFrame implements ActionListener {
+public class MainFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MainFrame.class);
-
 	private final ComponentGroupPanel memberDetailsFilePanel;
 
-	private final ComponentGroupPanel memberPaymentsFilePanel;
+	private final List<NotificationTab> notificationTabs;
 
-	private final ComponentGroupPanel fromDatePickerPanel;
-
-	private final ComponentGroupPanel notificationPanel;
-
-	private final NotificationsLoader notificationsLoader;
-
-	public MainFrame(ComponentGroupPanel memberDetailsFilePanel, ComponentGroupPanel memberPaymentsFilePanel,
-			ComponentGroupPanel fromDatePickerPanel, ComponentGroupPanel notificationPanel, NotificationsLoader notificationsLoader) throws HeadlessException {
+	public MainFrame(ComponentGroupPanel memberDetailsFilePanel, List<NotificationTab> notificationTabs)
+			throws HeadlessException {
 		super();
 		this.memberDetailsFilePanel = memberDetailsFilePanel;
-		this.memberPaymentsFilePanel = memberPaymentsFilePanel;
-		this.fromDatePickerPanel = fromDatePickerPanel;
-		this.notificationPanel = notificationPanel;
-		this.notificationsLoader = notificationsLoader;
+		this.notificationTabs = notificationTabs;
 	}
 
 	public void init() {
@@ -57,9 +49,6 @@ public class MainFrame extends JFrame implements ActionListener {
 
 	private void setupParentForPanels() {
 		memberDetailsFilePanel.setParentFrame(this);
-		memberDetailsFilePanel.setParentFrame(this);
-		fromDatePickerPanel.setParentFrame(this);
-		notificationPanel.setParentFrame(this);
 	}
 
 	private void loadPanels() {
@@ -71,33 +60,18 @@ public class MainFrame extends JFrame implements ActionListener {
 				"  Green County Co-operative Housing Society - Phase 1 (Send Payment Notifications)  ");
 		headerLabel.setFont(new Font("Courier", Font.BOLD, 20));
 
-		JButton loadNotificationsButton = new JButton("Load Notifications");
-		loadNotificationsButton.addActionListener(this);
+		JTabbedPane tabbedPane = new JTabbedPane();
+		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		for (NotificationTab nt : notificationTabs) {
+			nt.setParentFrame(this);
+			tabbedPane.addTab(nt.getTabName(), nt);
+		}
 
-		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addComponent(headerLabel).addGroup(memberDetailsFilePanel.getHorizontalComponents(groupLayout))
-				.addGroup(memberPaymentsFilePanel.getHorizontalComponents(groupLayout))
-				.addGroup(fromDatePickerPanel.getHorizontalComponents(groupLayout))
-				.addGroup(groupLayout.createSequentialGroup()
-						.addGap(30)
-						.addComponent(loadNotificationsButton))
-				.addGroup(notificationPanel.getHorizontalComponents(groupLayout)));
+		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup().addComponent(headerLabel)
+				.addGroup(memberDetailsFilePanel.getHorizontalComponents(groupLayout)).addComponent(tabbedPane));
 		groupLayout.setVerticalGroup(groupLayout.createSequentialGroup().addComponent(headerLabel).addGap(20)
 				.addGroup(memberDetailsFilePanel.getVerticalComponents(groupLayout)).addGap(10)
-				.addGroup(memberPaymentsFilePanel.getVerticalComponents(groupLayout)).addGap(10)
-				.addGroup(fromDatePickerPanel.getVerticalComponents(groupLayout)).addGap(10)
-				.addComponent(loadNotificationsButton).addGap(10)
-				.addGroup(notificationPanel.getVerticalComponents(groupLayout)));
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		try {
-			notificationsLoader.load();
-		} catch (IllegalArgumentException | IOException iae) {
-			LOGGER.error("Error while loading notifications", iae);
-			JOptionPane.showMessageDialog(this, iae.getMessage(), "Notifications Load Warning", JOptionPane.ERROR_MESSAGE);
-		}
+				.addComponent(tabbedPane));
 	}
 
 }

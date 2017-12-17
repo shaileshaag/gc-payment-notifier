@@ -1,4 +1,4 @@
-package com.gc.component;
+package com.gc.component.common;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Group;

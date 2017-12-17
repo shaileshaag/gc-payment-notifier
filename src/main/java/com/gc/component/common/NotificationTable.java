@@ -1,25 +1,28 @@
-package com.gc.component;
+package com.gc.component.common;
 
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-public class PaymentTable extends JTable {
+public class NotificationTable extends JTable {
 
 	private static final long serialVersionUID = 1L;
 
+	private final NotificationTableColumnCheckboxDecider checkboxDecider;
+
 	private Class editingClass;
 
-	public PaymentTable(final Object[][] notificationsData, Object[] headers) {
+	public NotificationTable(NotificationTableColumnCheckboxDecider checkboxDecider, final Object[][] notificationsData, Object[] headers) {
 		super(notificationsData, headers);
 		putClientProperty("terminateEditOnFocusLost", true);
+		this.checkboxDecider = checkboxDecider;
 	}
 
 	@Override
 	public TableCellRenderer getCellRenderer(int row, int column) {
 		editingClass = null;
 		int modelColumn = convertColumnIndexToModel(column);
-		if (isColumnCheckBox(modelColumn)) {
+		if (checkboxDecider.isCheckBox(modelColumn)) {
 			Class rowClass = getModel().getValueAt(row, modelColumn).getClass();
 			return getDefaultRenderer(rowClass);
 		} else {
@@ -31,7 +34,7 @@ public class PaymentTable extends JTable {
 	public TableCellEditor getCellEditor(int row, int column) {
 		editingClass = null;
 		int modelColumn = convertColumnIndexToModel(column);
-		if (isColumnCheckBox(modelColumn)) {
+		if (checkboxDecider.isCheckBox(modelColumn)) {
 			editingClass = getModel().getValueAt(row, modelColumn).getClass();
 			return getDefaultEditor(editingClass);
 		} else {
@@ -43,7 +46,7 @@ public class PaymentTable extends JTable {
 	public boolean isCellEditable(int row, int column) {
 		editingClass = null;
 		int modelColumn = convertColumnIndexToModel(column);
-		if (isColumnCheckBox(modelColumn)) {
+		if (checkboxDecider.isCheckBox(modelColumn)) {
 			editingClass = getModel().getValueAt(row, modelColumn).getClass();
 			if (editingClass == Boolean.class) {
 				return true;
@@ -55,10 +58,6 @@ public class PaymentTable extends JTable {
 	@Override
 	public Class getColumnClass(int column) {
 		return editingClass != null ? editingClass : super.getColumnClass(column);
-	}
-
-	private boolean isColumnCheckBox(int column) {
-		return (column == 4 || column == 5);
 	}
 
 }

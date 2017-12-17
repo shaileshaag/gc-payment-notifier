@@ -1,4 +1,4 @@
-package com.gc.component;
+package com.gc.component.common;
 
 import java.text.DateFormat;
 import java.text.ParseException;
