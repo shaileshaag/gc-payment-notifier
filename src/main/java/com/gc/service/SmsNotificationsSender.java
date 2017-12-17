@@ -53,7 +53,7 @@ public class SmsNotificationsSender {
 		this.objectMapper = new ObjectMapper();
 	}
 
-	public void send(String username, String password, List<Notification> notifications,
+	public void send(String username, String password, List<? extends Notification> notifications,
 			ProgressListener progressListener) {
 		progressListener.intimate("Preparing SMS notifications");
 		List<Map<String, String>> messages = new ArrayList<>();
@@ -85,7 +85,7 @@ public class SmsNotificationsSender {
 				sendSms(progressListener, messages);
 			}
 		} else {
-			progressListener.intimate("Sending SMS has been disabled");
+			progressListener.intimate(String.format("Prepared %s messages. Sending SMS has been disabled", messages));
 			LOGGER.info("Sending SMS has been disabled");
 		}
 		progressListener.markComplete();

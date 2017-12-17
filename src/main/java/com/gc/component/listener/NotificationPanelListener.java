@@ -25,7 +25,7 @@ public class NotificationPanelListener implements TableModelListener, ActionList
 
 	public static final String SELECT_ALL_SMS_ACTION_COMMAND = "SELECT_ALL_SMS";
 
-	private final List<Notification> notifications;
+	private final List<? extends Notification> notifications;
 
 	private final EmailNotificationsSender emailNotificationSender;
 
@@ -35,7 +35,7 @@ public class NotificationPanelListener implements TableModelListener, ActionList
 
 	private final JTable table;
 
-	public NotificationPanelListener(JFrame parentFrame, List<Notification> notifications,
+	public NotificationPanelListener(JFrame parentFrame, List<? extends Notification> notifications,
 			EmailNotificationsSender emailNotificationSender, SmsNotificationsSender smsNotificationSender,
 			JTable table) {
 		this.notifications = notifications;

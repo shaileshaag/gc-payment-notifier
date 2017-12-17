@@ -15,8 +15,8 @@ import com.gc.provider.DateProvider;
 import com.gc.provider.FileProvider;
 import com.gc.provider.NotificationReceiver;
 import com.gc.vo.MemberDetail;
-import com.gc.vo.Notification;
 import com.gc.vo.PaymentDetail;
+import com.gc.vo.PaymentNotification;
 
 public class NotificationsLoader {
 
@@ -50,13 +50,13 @@ public class NotificationsLoader {
 		validateDetails(memberDetailsFile, memberPaymentsFile, fromDate);
 		List<MemberDetail> members = memberDetailsReader.read(memberDetailsFile);
 		Map<String, List<PaymentDetail>> paymentDetails = paymentDetailsReader.read(memberPaymentsFile);
-		List<Notification> notifications = buildNotifications(members, paymentDetails, fromDate);
+		List<PaymentNotification> notifications = buildNotifications(members, paymentDetails, fromDate);
 		notificationPanel.receive(notifications);
 	}
 
-	private List<Notification> buildNotifications(List<MemberDetail> members,
+	private List<PaymentNotification> buildNotifications(List<MemberDetail> members,
 			Map<String, List<PaymentDetail>> paymentDetails, Date fromDate) {
-		List<Notification> notifications = new ArrayList<>();
+		List<PaymentNotification> notifications = new ArrayList<>();
 		for (MemberDetail m : members) {
 			String flatNo = m.getFlatNo();
 			if (!paymentDetails.containsKey(flatNo)) {
@@ -67,7 +67,7 @@ public class NotificationsLoader {
 				if (pd != null) {
 					if ((pd.getPaymentDate() != null
 							&& (pd.getPaymentDate().equals(fromDate) || pd.getPaymentDate().after(fromDate)))) {
-						Notification n = new Notification();
+						PaymentNotification n = new PaymentNotification();
 						n.setMemberDetail(m);
 						n.setPaymentDetail(pd);
 						n.setSendEmail(!StringUtils.isEmpty(m.getEmail()));

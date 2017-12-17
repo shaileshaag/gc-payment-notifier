@@ -6,6 +6,6 @@ import com.gc.vo.Notification;
 
 public interface NotificationReceiver {
 
-	void receive(List<Notification> notifications);
+	void receive(List<? extends Notification> notifications);
 
 }

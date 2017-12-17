@@ -25,6 +25,7 @@ import com.gc.service.NotificationsLoader;
 import com.gc.service.PaymentDetailsReader;
 import com.gc.service.SmsNotificationsSender;
 import com.gc.vo.EmailNotificationProperties;
+import com.gc.vo.PaymentNotification;
 import com.gc.vo.SmsNotificationProperties;
 
 @Configuration
@@ -54,7 +55,7 @@ public class PanelConfig {
 	@Bean(initMethod = "init")
 	public NotificationPanel paymentNotificationPanel() {
 		return new NotificationPanel("Send Notifications", emailNotificationSender(), smsNotificationSender(),
-				new PaymentNotificationTableColCheckboxDecider());
+				new PaymentNotificationTableColCheckboxDecider(), PaymentNotification.HEADERS);
 	}
 
 	@Bean

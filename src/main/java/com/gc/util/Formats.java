@@ -6,7 +6,6 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,16 +34,6 @@ public final class Formats {
 	public static final Pattern INPUT_DATE_PATTERN_2 = Pattern.compile("[0-9]{2}/[0-9]{2}/[0-9]{2}");
 
 	public static final DateFormat INPUT_DATE_FORMATTER_2 = new SimpleDateFormat("dd/MM/yy");
-
-	private static final String TEMPLATE_PAYMENT_AMOUNT = "payment-amount";
-
-	private static final String TEMPLATE_CHEQUE_NO = "cheque-no";
-
-	private static final String TEMPLATE_FLAT_NO = "flat-no";
-
-	private static final String TEMPLATE_RECEIVED_DATE = "received-date";
-
-	private static final String TEMPLATE_VOUCHER_NO = "voucher-no";
 
 	public static Date interpretDate(String dateStr) {
 		String trimmedDateStr = dateStr.trim();
@@ -76,18 +65,7 @@ public final class Formats {
 	}
 
 	public static StrSubstitutor prepareReplaceTemplate(Notification n) {
-		String formattedAmount = Formats.AMOUNT_FORMATTER.format(n.getPaymentDetail().getAmount());
-		String formattedRecDate = null;
-		if (n.getPaymentDetail().getPaymentDate() != null) {
-			formattedRecDate = Formats.DATE_FORMAT.format(n.getPaymentDetail().getPaymentDate());
-		}
-
-		Map<String, String> valueMap = new HashMap<>();
-		valueMap.put(TEMPLATE_CHEQUE_NO, n.getPaymentDetail().getCheckNo());
-		valueMap.put(TEMPLATE_FLAT_NO, n.getMemberDetail().getFlatNo());
-		valueMap.put(TEMPLATE_PAYMENT_AMOUNT, formattedAmount);
-		valueMap.put(TEMPLATE_RECEIVED_DATE, formattedRecDate);
-		valueMap.put(TEMPLATE_VOUCHER_NO, String.valueOf(n.getPaymentDetail().getVoucherNo()));
+		Map<String, String> valueMap = n.getTemplate();
 		return new StrSubstitutor(valueMap, "$$[", "]");
 	}
 

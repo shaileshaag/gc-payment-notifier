@@ -1,36 +1,33 @@
 package com.gc.vo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.gc.util.Formats;
 
-public class PaymentNotification implements Comparable<PaymentNotification> {
+public class PaymentNotification extends Notification implements Comparable<PaymentNotification> {
+
+	private static final String TEMPLATE_PAYMENT_AMOUNT = "payment-amount";
+
+	private static final String TEMPLATE_CHEQUE_NO = "cheque-no";
+
+	private static final String TEMPLATE_RECEIVED_DATE = "received-date";
+
+	private static final String TEMPLATE_VOUCHER_NO = "voucher-no";
 
 	public static final String[] HEADERS = { "Flat No.", "Voucher No", "Amount", "Date", "Send Email", "Send SMS" };
 
-	private MemberDetail memberDetail;
-
 	private PaymentDetail paymentDetail;
 
-	private boolean sendEmail;
-
-	private boolean sendSms;
-
 	public Object[] getTableDataArray() {
-		Object emailEntry = memberDetail.canSendEmail() ? Boolean.TRUE : "No Email ID";
-		Object smsEntry = memberDetail.canSendSMS() ? Boolean.TRUE : "No Mobile No.";
+		Object emailEntry = getMemberDetail().canSendEmail() ? Boolean.TRUE : "No Email ID";
+		Object smsEntry = getMemberDetail().canSendSMS() ? Boolean.TRUE : "No Mobile No.";
 		String paymentDate = null;
 		if (paymentDetail.getPaymentDate() != null) {
 			paymentDate = Formats.DATE_FORMAT.format(paymentDetail.getPaymentDate());
 		}
-		return new Object[] { memberDetail.getFlatNo(), paymentDetail.getVoucherNo(), paymentDetail.getAmount(), paymentDate, emailEntry,
-				smsEntry };
-	}
-
-	public MemberDetail getMemberDetail() {
-		return memberDetail;
-	}
-
-	public void setMemberDetail(MemberDetail memberDetail) {
-		this.memberDetail = memberDetail;
+		return new Object[] { getMemberDetail().getFlatNo(), paymentDetail.getVoucherNo(), paymentDetail.getAmount(),
+				paymentDate, emailEntry, smsEntry };
 	}
 
 	public PaymentDetail getPaymentDetail() {
@@ -41,27 +38,11 @@ public class PaymentNotification implements Comparable<PaymentNotification> {
 		this.paymentDetail = paymentDetail;
 	}
 
-	public boolean isSendEmail() {
-		return sendEmail;
-	}
-
-	public void setSendEmail(boolean sendEmail) {
-		this.sendEmail = sendEmail;
-	}
-
-	public boolean isSendSms() {
-		return sendSms;
-	}
-
-	public void setSendSms(boolean sendSms) {
-		this.sendSms = sendSms;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((memberDetail.getFlatNo() == null) ? 0 : memberDetail.getFlatNo().hashCode());
+		result = prime * result + super.hashCode();
 		result = prime * result
 				+ ((paymentDetail.getPaymentDate() == null) ? 0 : paymentDetail.getPaymentDate().hashCode());
 		return result;
@@ -69,18 +50,14 @@ public class PaymentNotification implements Comparable<PaymentNotification> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
+		boolean parentEquals = super.equals(obj);
+		if (!parentEquals) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (!(obj instanceof PaymentNotification)) {
 			return false;
+		}
 		PaymentNotification other = (PaymentNotification) obj;
-		if (memberDetail == null) {
-			if (other.memberDetail != null)
-				return false;
-		} else if (!memberDetail.getFlatNo().equals(other.memberDetail.getFlatNo()))
-			return false;
 		if (paymentDetail == null) {
 			if (other.paymentDetail != null)
 				return false;
@@ -91,9 +68,9 @@ public class PaymentNotification implements Comparable<PaymentNotification> {
 
 	@Override
 	public int compareTo(PaymentNotification o) {
-		int flatNoComp = memberDetail.getFlatNo().compareTo(o.getMemberDetail().getFlatNo());
-		if (flatNoComp != 0) {
-			return flatNoComp;
+		int superComp = notificationCompareTo(o);
+		if (superComp != 0) {
+			return superComp;
 		}
 		return paymentDetail.getPaymentDate().compareTo(o.getPaymentDetail().getPaymentDate());
 	}
@@ -101,10 +78,24 @@ public class PaymentNotification implements Comparable<PaymentNotification> {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Notification [memberDetail=").append(memberDetail).append(", paymentDetail=")
-				.append(paymentDetail).append(", sendEmail=").append(sendEmail).append(", sendSms=").append(sendSms)
+		builder.append("Notification [").append(super.toString()).append(", paymentDetail=").append(paymentDetail)
 				.append("]");
 		return builder.toString();
+	}
+
+	@Override
+	public Map<String, String> buildTypeTemplate() {
+		String formattedAmount = Formats.AMOUNT_FORMATTER.format(paymentDetail.getAmount());
+		String formattedRecDate = null;
+		if (paymentDetail.getPaymentDate() != null) {
+			formattedRecDate = Formats.DATE_FORMAT.format(paymentDetail.getPaymentDate());
+		}
+		Map<String, String> valueMap = new HashMap<>();
+		valueMap.put(TEMPLATE_CHEQUE_NO, paymentDetail.getCheckNo());
+		valueMap.put(TEMPLATE_PAYMENT_AMOUNT, formattedAmount);
+		valueMap.put(TEMPLATE_RECEIVED_DATE, formattedRecDate);
+		valueMap.put(TEMPLATE_VOUCHER_NO, String.valueOf(paymentDetail.getVoucherNo()));
+		return valueMap;
 	}
 
 }

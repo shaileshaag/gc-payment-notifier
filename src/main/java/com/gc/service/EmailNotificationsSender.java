@@ -35,7 +35,7 @@ public class EmailNotificationsSender {
 		this.javaMailSender = javaMailSender;
 	}
 
-	public void send(String username, String password, List<Notification> notifications,
+	public void send(String username, String password, List<? extends Notification> notifications,
 			ProgressListener progressListener) {
 		List<SimpleMailMessage> messages = new ArrayList<>();
 		String fromEmail = username + "@gmail.com";
@@ -65,7 +65,7 @@ public class EmailNotificationsSender {
 				javaMailSender.setPassword(null);
 			}
 		} else {
-			progressListener.intimate("Sending email has been disabled");
+			progressListener.intimate(String.format("Prepared %s messages. Sending email has been disabled", messages));
 			LOGGER.info("Sending email has been disabled");
 		}
 		progressListener.markComplete();

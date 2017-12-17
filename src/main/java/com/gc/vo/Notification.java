@@ -1,29 +1,17 @@
 package com.gc.vo;
 
-import com.gc.util.Formats;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Notification implements Comparable<Notification> {
+public abstract class Notification {
 
-	public static final String[] HEADERS = { "Flat No.", "Voucher No", "Amount", "Date", "Send Email", "Send SMS" };
+	private static final String TEMPLATE_FLAT_NO = "flat-no";
 
 	private MemberDetail memberDetail;
-
-	private PaymentDetail paymentDetail;
 
 	private boolean sendEmail;
 
 	private boolean sendSms;
-
-	public Object[] getTableDataArray() {
-		Object emailEntry = memberDetail.canSendEmail() ? Boolean.TRUE : "No Email ID";
-		Object smsEntry = memberDetail.canSendSMS() ? Boolean.TRUE : "No Mobile No.";
-		String paymentDate = null;
-		if (paymentDetail.getPaymentDate() != null) {
-			paymentDate = Formats.DATE_FORMAT.format(paymentDetail.getPaymentDate());
-		}
-		return new Object[] { memberDetail.getFlatNo(), paymentDetail.getVoucherNo(), paymentDetail.getAmount(), paymentDate, emailEntry,
-				smsEntry };
-	}
 
 	public MemberDetail getMemberDetail() {
 		return memberDetail;
@@ -31,14 +19,6 @@ public class Notification implements Comparable<Notification> {
 
 	public void setMemberDetail(MemberDetail memberDetail) {
 		this.memberDetail = memberDetail;
-	}
-
-	public PaymentDetail getPaymentDetail() {
-		return paymentDetail;
-	}
-
-	public void setPaymentDetail(PaymentDetail paymentDetail) {
-		this.paymentDetail = paymentDetail;
 	}
 
 	public boolean isSendEmail() {
@@ -62,8 +42,6 @@ public class Notification implements Comparable<Notification> {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((memberDetail.getFlatNo() == null) ? 0 : memberDetail.getFlatNo().hashCode());
-		result = prime * result
-				+ ((paymentDetail.getPaymentDate() == null) ? 0 : paymentDetail.getPaymentDate().hashCode());
 		return result;
 	}
 
@@ -81,30 +59,33 @@ public class Notification implements Comparable<Notification> {
 				return false;
 		} else if (!memberDetail.getFlatNo().equals(other.memberDetail.getFlatNo()))
 			return false;
-		if (paymentDetail == null) {
-			if (other.paymentDetail != null)
-				return false;
-		} else if (!paymentDetail.getPaymentDate().equals(other.paymentDetail.getPaymentDate()))
-			return false;
 		return true;
 	}
 
-	@Override
-	public int compareTo(Notification o) {
-		int flatNoComp = memberDetail.getFlatNo().compareTo(o.getMemberDetail().getFlatNo());
-		if (flatNoComp != 0) {
-			return flatNoComp;
-		}
-		return paymentDetail.getPaymentDate().compareTo(o.getPaymentDetail().getPaymentDate());
+	public int notificationCompareTo(Notification o) {
+		return memberDetail.getFlatNo().compareTo(o.getMemberDetail().getFlatNo());
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Notification [memberDetail=").append(memberDetail).append(", paymentDetail=")
-				.append(paymentDetail).append(", sendEmail=").append(sendEmail).append(", sendSms=").append(sendSms)
-				.append("]");
+		builder.append("memberDetail=").append(memberDetail).append(", sendEmail=").append(sendEmail)
+				.append(", sendSms=").append(sendSms);
 		return builder.toString();
 	}
+
+	public Map<String, String> getTemplate() {
+		Map<String, String> valueMap = new HashMap<>();
+		valueMap.put(TEMPLATE_FLAT_NO, memberDetail.getFlatNo());
+		Map<String, String> typeTemplate = buildTypeTemplate();
+		if (typeTemplate != null) {
+			valueMap.putAll(typeTemplate);
+		}
+		return valueMap;
+	}
+
+	public abstract Object[] getTableDataArray();
+
+	protected abstract Map<String, String> buildTypeTemplate();
 
 }

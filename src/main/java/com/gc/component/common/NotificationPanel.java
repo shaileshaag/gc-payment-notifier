@@ -28,6 +28,8 @@ public class NotificationPanel implements ComponentGroupPanel, NotificationRecei
 
 	private final NotificationTableColumnCheckboxDecider checkboxDecider;
 
+	public final String[] headers;
+
 	private JScrollPane js;
 
 	private JButton sendButton;
@@ -39,15 +41,17 @@ public class NotificationPanel implements ComponentGroupPanel, NotificationRecei
 	private JFrame parentFrame;
 
 	public NotificationPanel(String sendNotificationsButtonText, EmailNotificationsSender emailNotificationSender,
-			SmsNotificationsSender smsNotificationSender, NotificationTableColumnCheckboxDecider checkboxDecider) {
+			SmsNotificationsSender smsNotificationSender, NotificationTableColumnCheckboxDecider checkboxDecider,
+			String[] headers) {
 		this.sendNotificationsButtonText = sendNotificationsButtonText;
 		this.emailNotificationSender = emailNotificationSender;
 		this.smsNotificationSender = smsNotificationSender;
 		this.checkboxDecider = checkboxDecider;
+		this.headers = headers;
 	}
 
 	public void init() {
-		NotificationTable table = new NotificationTable(checkboxDecider, new Object[0][], Notification.HEADERS);
+		NotificationTable table = new NotificationTable(checkboxDecider, new Object[0][], headers);
 
 		table.setFillsViewportHeight(true);
 		table.setVisible(false);
@@ -82,7 +86,7 @@ public class NotificationPanel implements ComponentGroupPanel, NotificationRecei
 	}
 
 	@Override
-	public void receive(final List<Notification> notifications) {
+	public void receive(final List<? extends Notification> notifications) {
 		removeAllListeners();
 		NotificationTable table = null;
 		if (notifications.isEmpty()) {
@@ -91,11 +95,11 @@ public class NotificationPanel implements ComponentGroupPanel, NotificationRecei
 			selectAllEmail.setEnabled(false);
 			selectAllSMS.setSelected(true);
 			selectAllSMS.setEnabled(false);
-			table = new NotificationTable(checkboxDecider, new Object[0][], Notification.HEADERS);
+			table = new NotificationTable(checkboxDecider, new Object[0][], headers);
 		} else {
 			Object[][] notificationsData = notifications.stream().map(n -> n.getTableDataArray())
 					.collect(Collectors.toList()).toArray(new Object[0][]);
-			table = new NotificationTable(checkboxDecider, notificationsData, Notification.HEADERS);
+			table = new NotificationTable(checkboxDecider, notificationsData, headers);
 			table.setFillsViewportHeight(true);
 			TableModel tableModel = table.getModel();
 			NotificationPanelListener npl = new NotificationPanelListener(parentFrame, notifications,
