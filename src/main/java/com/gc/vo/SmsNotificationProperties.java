@@ -8,10 +8,6 @@ public class SmsNotificationProperties {
 
 	private String sender;
 
-	private String flashParam;
-
-	private String gwidParam;
-
 	private BodyProperties body;
 
 	public boolean isEnabled() {
@@ -44,22 +40,6 @@ public class SmsNotificationProperties {
 
 	public void setBusinessMantraUrl(String businessMantraUrl) {
 		this.businessMantraUrl = businessMantraUrl;
-	}
-
-	public String getFlashParam() {
-		return flashParam;
-	}
-
-	public void setFlashParam(String flashParam) {
-		this.flashParam = flashParam;
-	}
-
-	public String getGwidParam() {
-		return gwidParam;
-	}
-
-	public void setGwidParam(String gwidParam) {
-		this.gwidParam = gwidParam;
 	}
 
 	public static class BodyProperties {

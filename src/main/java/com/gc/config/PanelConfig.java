@@ -24,6 +24,8 @@ import com.gc.service.MemberDetailsReader;
 import com.gc.service.PaymentNotificationsLoader;
 import com.gc.service.PaymentDetailsReader;
 import com.gc.service.SmsNotificationsSender;
+import com.gc.util.GcEmailSender;
+import com.gc.util.GcSmsSender;
 import com.gc.vo.EmailNotificationProperties;
 import com.gc.vo.PaymentNotification;
 import com.gc.vo.SmsNotificationProperties;
@@ -43,25 +45,13 @@ public class PanelConfig {
 	}
 
 	@Bean
-	public EmailNotificationsSender emailNotificationSender() {
-		return new EmailNotificationsSender(emailNotificationProperties(), javaMailSender);
+	public GcEmailSender gcEmailSender() {
+		return new GcEmailSender(javaMailSender);
 	}
 
 	@Bean
-	public SmsNotificationsSender smsNotificationSender() {
-		return new SmsNotificationsSender(smsNotificationProperties(), smsRestTemplate());
-	}
-
-	@Bean
-	@ConfigurationProperties(prefix = "payment.mail")
-	public EmailNotificationProperties emailNotificationProperties() {
-		return new EmailNotificationProperties();
-	}
-
-	@Bean
-	@ConfigurationProperties(prefix = "payment.sms")
-	public SmsNotificationProperties smsNotificationProperties() {
-		return new SmsNotificationProperties();
+	public GcSmsSender gcSmsSender() {
+		return new GcSmsSender(smsRestTemplate(), paymentSmsNotificationProperties());
 	}
 
 	@Bean
@@ -72,6 +62,28 @@ public class PanelConfig {
 	@Bean
 	public MemberDetailsReader memberDetailsReader() {
 		return new MemberDetailsReader();
+	}
+
+	@Bean
+	public EmailNotificationsSender paymentEmailNotificationSender() {
+		return new EmailNotificationsSender(paymentEmailNotificationProperties(), gcEmailSender());
+	}
+
+	@Bean
+	@ConfigurationProperties(prefix = "payment.mail")
+	public EmailNotificationProperties paymentEmailNotificationProperties() {
+		return new EmailNotificationProperties();
+	}
+
+	@Bean
+	public SmsNotificationsSender paymentSmsNotificationSender() {
+		return new SmsNotificationsSender(paymentSmsNotificationProperties(), gcSmsSender());
+	}
+
+	@Bean
+	@ConfigurationProperties(prefix = "payment.sms")
+	public SmsNotificationProperties paymentSmsNotificationProperties() {
+		return new SmsNotificationProperties();
 	}
 
 	@Bean
@@ -91,7 +103,7 @@ public class PanelConfig {
 
 	@Bean(initMethod = "init")
 	public NotificationPanel paymentNotificationPanel() {
-		return new NotificationPanel("Send Notifications", emailNotificationSender(), smsNotificationSender(),
+		return new NotificationPanel("Send Notifications", paymentEmailNotificationSender(), paymentSmsNotificationSender(),
 				new PaymentNotificationTableColCheckboxDecider(), PaymentNotification.HEADERS);
 	}
 
