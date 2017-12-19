@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.gc.component.common.ComponentGroupPanel;
 import com.gc.component.common.NotificationTab;
-import com.gc.service.PaymentNotificationsLoader;
+import com.gc.service.payment.PaymentNotificationsLoader;
 
 public class PaymentNotificationTab extends NotificationTab implements ActionListener {
 
@@ -44,7 +44,7 @@ public class PaymentNotificationTab extends NotificationTab implements ActionLis
 		GroupLayout tabbedGroupLayout = new GroupLayout(this);
 		setLayout(tabbedGroupLayout);
 
-		JButton loadNotificationsButton = new JButton("Load Notifications");
+		JButton loadNotificationsButton = new JButton("Load Payment Notifications");
 		loadNotificationsButton.addActionListener(this);
 
 		tabbedGroupLayout.setHorizontalGroup(tabbedGroupLayout.createParallelGroup(Alignment.LEADING)

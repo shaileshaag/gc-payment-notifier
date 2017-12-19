@@ -1,4 +1,4 @@
-package com.gc.service;
+package com.gc.service.payment;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,9 +14,10 @@ import org.springframework.util.StringUtils;
 import com.gc.provider.DateProvider;
 import com.gc.provider.FileProvider;
 import com.gc.provider.NotificationReceiver;
+import com.gc.service.MemberDetailsReader;
 import com.gc.vo.MemberDetail;
-import com.gc.vo.PaymentDetail;
-import com.gc.vo.PaymentNotification;
+import com.gc.vo.payment.PaymentDetail;
+import com.gc.vo.payment.PaymentNotification;
 
 public class PaymentNotificationsLoader {
 

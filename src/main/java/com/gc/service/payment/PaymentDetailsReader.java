@@ -1,4 +1,4 @@
-package com.gc.service;
+package com.gc.service.payment;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,7 +22,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.gc.util.Formats;
-import com.gc.vo.PaymentDetail;
+import com.gc.vo.payment.PaymentDetail;
 
 public class PaymentDetailsReader {
 

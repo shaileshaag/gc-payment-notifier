@@ -1,9 +1,10 @@
-package com.gc.vo;
+package com.gc.vo.payment;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import com.gc.util.Formats;
+import com.gc.vo.Notification;
 
 public class PaymentNotification extends Notification implements Comparable<PaymentNotification> {
 

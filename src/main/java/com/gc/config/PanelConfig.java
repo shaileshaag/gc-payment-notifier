@@ -19,16 +19,20 @@ import com.gc.component.common.NotificationTab;
 import com.gc.component.payment.PaymentNotificationTab;
 import com.gc.component.payment.PaymentNotificationTableColCheckboxDecider;
 import com.gc.component.pending.PendingNotificationTab;
+import com.gc.component.pending.PendingNotificationTableColCheckboxDecider;
 import com.gc.service.EmailNotificationsSender;
 import com.gc.service.MemberDetailsReader;
-import com.gc.service.PaymentNotificationsLoader;
-import com.gc.service.PaymentDetailsReader;
 import com.gc.service.SmsNotificationsSender;
+import com.gc.service.payment.PaymentDetailsReader;
+import com.gc.service.payment.PaymentNotificationsLoader;
+import com.gc.service.pending.PendingDetailsReader;
+import com.gc.service.pending.PendingNotificationsLoader;
 import com.gc.util.GcEmailSender;
 import com.gc.util.GcSmsSender;
 import com.gc.vo.EmailNotificationProperties;
-import com.gc.vo.PaymentNotification;
 import com.gc.vo.SmsNotificationProperties;
+import com.gc.vo.payment.PaymentNotification;
+import com.gc.vo.pending.PendingNotification;
 
 @Configuration
 public class PanelConfig {
@@ -103,14 +107,15 @@ public class PanelConfig {
 
 	@Bean(initMethod = "init")
 	public NotificationPanel paymentNotificationPanel() {
-		return new NotificationPanel("Send Notifications", paymentEmailNotificationSender(), paymentSmsNotificationSender(),
-				new PaymentNotificationTableColCheckboxDecider(), PaymentNotification.HEADERS);
+		return new NotificationPanel("Send Payment Notifications", paymentEmailNotificationSender(),
+				paymentSmsNotificationSender(), new PaymentNotificationTableColCheckboxDecider(),
+				PaymentNotification.HEADERS);
 	}
 
 	@Bean
 	public PaymentNotificationsLoader paymentNotificationsLoader() {
-		return new PaymentNotificationsLoader(memberDetailsFilePanel(), memberPaymentsFilePanel(), fromDatePickerPanel(),
-				paymentNotificationPanel(), memberDetailsReader(), paymentDetailsReader());
+		return new PaymentNotificationsLoader(memberDetailsFilePanel(), memberPaymentsFilePanel(),
+				fromDatePickerPanel(), paymentNotificationPanel(), memberDetailsReader(), paymentDetailsReader());
 	}
 
 	@Bean(initMethod = "init")
@@ -120,8 +125,59 @@ public class PanelConfig {
 	}
 
 	@Bean(initMethod = "init")
+	public FileLoaderImpl memberPendingFilePanel() {
+		return new FileLoaderImpl("Member Pending File", "Load");
+	}
+
+	@Bean(initMethod = "init")
+	public DatePickerPanel pendingDatePickerPanel() {
+		return new DatePickerPanel("dd-MMM-yyyy", "Pending payments since");
+	}
+
+	@Bean
+	public EmailNotificationsSender pendingEmailNotificationSender() {
+		return new EmailNotificationsSender(pendingEmailNotificationProperties(), gcEmailSender());
+	}
+
+	@Bean
+	@ConfigurationProperties(prefix = "pending.mail")
+	public EmailNotificationProperties pendingEmailNotificationProperties() {
+		return new EmailNotificationProperties();
+	}
+
+	@Bean
+	public SmsNotificationsSender pendingSmsNotificationSender() {
+		return new SmsNotificationsSender(pendingSmsNotificationProperties(), gcSmsSender());
+	}
+
+	@Bean
+	@ConfigurationProperties(prefix = "pending.sms")
+	public SmsNotificationProperties pendingSmsNotificationProperties() {
+		return new SmsNotificationProperties();
+	}
+
+	@Bean(initMethod = "init")
+	public NotificationPanel pendingNotificationPanel() {
+		return new NotificationPanel("Send Pending Notifications", pendingEmailNotificationSender(),
+				pendingSmsNotificationSender(), new PendingNotificationTableColCheckboxDecider(),
+				PendingNotification.HEADERS);
+	}
+
+	@Bean
+	public PendingDetailsReader pendingDetailsReader() {
+		return new PendingDetailsReader();
+	}
+
+	@Bean
+	public PendingNotificationsLoader pendingNotificationsLoader() {
+		return new PendingNotificationsLoader(memberDetailsFilePanel(), memberPendingFilePanel(),
+				pendingDatePickerPanel(), pendingNotificationPanel(), memberDetailsReader(), pendingDetailsReader());
+	}
+
+	@Bean(initMethod = "init")
 	public NotificationTab pendingNotificationTab() {
-		return new PendingNotificationTab();
+		return new PendingNotificationTab(memberPendingFilePanel(), pendingDatePickerPanel(),
+				pendingNotificationPanel(), pendingNotificationsLoader());
 	}
 
 	@Bean(initMethod = "init")
