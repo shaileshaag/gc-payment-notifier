@@ -64,6 +64,13 @@ public final class Formats {
 		return null;
 	}
 
+	public static String presentableFlatNumber(String flatNo) {
+		if (StringUtils.isNotBlank(flatNo) && flatNo.length() > 2) {
+			return flatNo.substring(0, 2) + "-" + flatNo.substring(2);
+		}
+		return flatNo;
+	}
+
 	public static StrSubstitutor prepareReplaceTemplate(Notification n) {
 		Map<String, String> valueMap = n.getTemplate();
 		return new StrSubstitutor(valueMap, "$$[", "]");

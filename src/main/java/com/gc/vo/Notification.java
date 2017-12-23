@@ -3,6 +3,8 @@ package com.gc.vo;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.gc.util.Formats;
+
 public abstract class Notification {
 
 	private static final String TEMPLATE_FLAT_NO = "flat-no";
@@ -76,7 +78,7 @@ public abstract class Notification {
 
 	public Map<String, String> getTemplate() {
 		Map<String, String> valueMap = new HashMap<>();
-		valueMap.put(TEMPLATE_FLAT_NO, memberDetail.getFlatNo());
+		valueMap.put(TEMPLATE_FLAT_NO, Formats.presentableFlatNumber(memberDetail.getFlatNo()));
 		Map<String, String> typeTemplate = buildTypeTemplate();
 		if (typeTemplate != null) {
 			valueMap.putAll(typeTemplate);
