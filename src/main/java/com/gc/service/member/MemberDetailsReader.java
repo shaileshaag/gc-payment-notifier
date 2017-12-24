@@ -1,4 +1,4 @@
-package com.gc.service;
+package com.gc.service.member;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,32 +14,28 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.gc.util.Formats;
-import com.gc.vo.MemberDetail;
+import com.gc.vo.member.MemberDetail;
+import com.gc.vo.member.MemberSheetConfig;
+import com.gc.vo.member.MemberSheetConfig.MemberSheetCellConfig;
 
 public class MemberDetailsReader {
 
-	@Value("${member-details.cell.flat-no}")
-	private int flatNoCell = 0;
+	private MemberSheetConfig memberSheetConfig;
 
-	@Value("${member-details.cell.mobile-no}")
-	private int mobileNoCell = 1;
-
-	@Value("${member-details.cell.email-id}")
-	private int emailIdCell = 2;
-
-	@Value("${member-details.cell.max-cells}")
-	private int maxCell = 2;
+	public MemberDetailsReader(MemberSheetConfig memberSheetConfig) {
+		this.memberSheetConfig = memberSheetConfig;
+	}
 
 	public List<MemberDetail> read(File memberDetailsFile) throws FileNotFoundException, IOException {
 		List<MemberDetail> returnValue = new ArrayList<>();
 		HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(memberDetailsFile));
 		HSSFSheet sheet = wb.getSheetAt(0);
 		Iterator<Row> rows = sheet.rowIterator();
-		// Ignore first row
-		rows.next();
+		for (int i = 0; i < memberSheetConfig.getSkipRows(); i++) {
+			rows.next();
+		}
 		while (rows.hasNext()) {
 			HSSFRow row = (HSSFRow) rows.next();
 			MemberDetail md = buildMemberDetail(row);
@@ -51,16 +47,17 @@ public class MemberDetailsReader {
 	}
 
 	private MemberDetail buildMemberDetail(HSSFRow row) {
+		MemberSheetCellConfig cellConfig = memberSheetConfig.getCell();
 		MemberDetail md = new MemberDetail();
 		Iterator<Cell> cellIterator = row.cellIterator();
 		int cellCounter = 0;
-		while (cellIterator.hasNext() && cellCounter < maxCell) {
+		while (cellIterator.hasNext() && cellCounter < cellConfig.getMaxCells()) {
 			Cell cell = cellIterator.next();
-			if (cellCounter == flatNoCell) {
+			if (cellCounter == cellConfig.getFlatNoCell()) {
 				md.setFlatNo(readFlatNo(cell));
-			} else if (cellCounter == mobileNoCell) {
+			} else if (cellCounter == cellConfig.getMobileNoCell()) {
 				md.setMobile(readMobileNo(cell));
-			} else if (cellCounter == emailIdCell) {
+			} else if (cellCounter == cellConfig.getEmailIdCell()) {
 				md.setEmail(readEmailId(cell));
 			}
 			cellCounter++;

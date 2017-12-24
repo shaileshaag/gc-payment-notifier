@@ -14,8 +14,8 @@ import org.springframework.util.StringUtils;
 import com.gc.provider.DateProvider;
 import com.gc.provider.FileProvider;
 import com.gc.provider.NotificationReceiver;
-import com.gc.service.MemberDetailsReader;
-import com.gc.vo.MemberDetail;
+import com.gc.service.member.MemberDetailsReader;
+import com.gc.vo.member.MemberDetail;
 import com.gc.vo.pending.PendingDetail;
 import com.gc.vo.pending.PendingNotification;
 
@@ -65,16 +65,13 @@ public class PendingNotificationsLoader {
 			}
 			List<PendingDetail> payments = pendingDetails.get(flatNo);
 			for (PendingDetail pd : payments) {
-				if (pd != null) {
-					if ((pd.getPendingDate() != null
-							&& (pd.getPendingDate().equals(fromDate) || pd.getPendingDate().after(fromDate)))) {
-						PendingNotification n = new PendingNotification();
-						n.setMemberDetail(m);
-						n.setPendingDetail(pd);
-						n.setSendEmail(!StringUtils.isEmpty(m.getEmail()));
-						n.setSendSms(!StringUtils.isEmpty(m.getMobile()));
-						notifications.add(n);
-					}
+				if (pd != null && pd.getAmount() > 0) {
+					PendingNotification n = new PendingNotification();
+					n.setMemberDetail(m);
+					n.setPendingDetail(pd);
+					n.setSendEmail(!StringUtils.isEmpty(m.getEmail()));
+					n.setSendSms(!StringUtils.isEmpty(m.getMobile()));
+					notifications.add(n);
 				}
 			}
 		}

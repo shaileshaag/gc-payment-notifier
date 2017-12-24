@@ -15,32 +15,31 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.gc.util.Formats;
 import com.gc.vo.pending.PendingDetail;
+import com.gc.vo.pending.PendingSheetConfig;
+import com.gc.vo.pending.PendingSheetConfig.PendingSheetCellConfig;
 
 public class PendingDetailsReader {
 
-	@Value("${pending-details.cell.amount-cell}")
-	private int amountCell;
+	private PendingSheetConfig pendingSheetConfig;
 
-	@Value("${pending-details.cell.flat-no-cell}")
-	private int flatNoCell;
+	public PendingDetailsReader(PendingSheetConfig pendingSheetConfig) {
+		this.pendingSheetConfig = pendingSheetConfig;
+	}
 
-	@Value("${pending-details.cell.max-cells}")
-	private int maxCellRead;
-
-	public Map<String, List<PendingDetail>> read(File memberPaymentsFile, Date pendingSince) throws FileNotFoundException, IOException {
+	public Map<String, List<PendingDetail>> read(File memberPaymentsFile, Date pendingSince)
+			throws FileNotFoundException, IOException {
 		MultiValueMap<String, PendingDetail> returnValue = new LinkedMultiValueMap<>();
 		HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(memberPaymentsFile));
 		HSSFSheet sheet = wb.getSheetAt(0);
 		Iterator<Row> rows = sheet.rowIterator();
-		// Ignore first two rows
-		rows.next();
-		rows.next();
+		for (int i = 0; i < pendingSheetConfig.getSkipRows(); i++) {
+			rows.next();
+		}
 		while (rows.hasNext()) {
 			HSSFRow row = (HSSFRow) rows.next();
 			PendingDetail pd = buildPaymentDetail(row, pendingSince);
@@ -57,11 +56,12 @@ public class PendingDetailsReader {
 
 		Iterator<Cell> cellIterator = row.cellIterator();
 		int cellCounter = 0;
-		while (cellIterator.hasNext() && cellCounter < maxCellRead) {
+		PendingSheetCellConfig cellConfig = pendingSheetConfig.getCell();
+		while (cellIterator.hasNext() && cellCounter < cellConfig.getMaxCells()) {
 			Cell cell = cellIterator.next();
-			if (cellCounter == amountCell) {
+			if (cellCounter == cellConfig.getAmountCell()) {
 				pd.setAmount(readAmount(cell));
-			} else if (cellCounter == flatNoCell) {
+			} else if (cellCounter == cellConfig.getFlatNoCell()) {
 				pd.setFlatNo(readFlatNo(cell));
 			}
 			cellCounter++;

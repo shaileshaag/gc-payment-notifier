@@ -14,8 +14,8 @@ import org.springframework.util.StringUtils;
 import com.gc.provider.DateProvider;
 import com.gc.provider.FileProvider;
 import com.gc.provider.NotificationReceiver;
-import com.gc.service.MemberDetailsReader;
-import com.gc.vo.MemberDetail;
+import com.gc.service.member.MemberDetailsReader;
+import com.gc.vo.member.MemberDetail;
 import com.gc.vo.payment.PaymentDetail;
 import com.gc.vo.payment.PaymentNotification;
 

@@ -1,4 +1,4 @@
-package com.gc.vo;
+package com.gc.vo.member;
 
 import org.apache.commons.lang3.StringUtils;
 

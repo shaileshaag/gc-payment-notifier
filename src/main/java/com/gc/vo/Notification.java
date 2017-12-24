@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.gc.util.Formats;
+import com.gc.vo.member.MemberDetail;
 
 public abstract class Notification {
 

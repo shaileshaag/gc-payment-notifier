@@ -17,41 +17,30 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.gc.util.Formats;
 import com.gc.vo.payment.PaymentDetail;
+import com.gc.vo.payment.PaymentSheetConfig;
+import com.gc.vo.payment.PaymentSheetConfig.PaymentSheetCellConfig;
 
 public class PaymentDetailsReader {
 
-	@Value("${payment-details.cell.voucher-no-cell}")
-	private int voucherNoCell;
+	private PaymentSheetConfig paymentSheetConfig;
 
-	@Value("${payment-details.cell.rcvd-date-cell}")
-	private int rcvdDateCell;
-
-	@Value("${payment-details.cell.amount-cell}")
-	private int amountCell;
-
-	@Value("${payment-details.cell.cheque-no-cell}")
-	private int chequeNoCell;
-
-	@Value("${payment-details.cell.flat-no-cell}")
-	private int flatNoCell;
-
-	@Value("${payment-details.cell.max-cells}")
-	private int maxCellRead;
+	public PaymentDetailsReader(PaymentSheetConfig paymentSheetConfig) {
+		this.paymentSheetConfig = paymentSheetConfig;
+	}
 
 	public Map<String, List<PaymentDetail>> read(File memberPaymentsFile) throws FileNotFoundException, IOException {
 		MultiValueMap<String, PaymentDetail> returnValue = new LinkedMultiValueMap<>();
 		HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(memberPaymentsFile));
 		HSSFSheet sheet = wb.getSheetAt(0);
 		Iterator<Row> rows = sheet.rowIterator();
-		// Ignore first two rows
-		rows.next();
-		rows.next();
+		for (int i = 0; i < paymentSheetConfig.getSkipRows(); i++) {
+			rows.next();
+		}
 		while (rows.hasNext()) {
 			HSSFRow row = (HSSFRow) rows.next();
 			PaymentDetail pd = buildPaymentDetail(row);
@@ -63,21 +52,22 @@ public class PaymentDetailsReader {
 	}
 
 	private PaymentDetail buildPaymentDetail(HSSFRow row) {
+		PaymentSheetCellConfig cellConfig = paymentSheetConfig.getCell();
 		PaymentDetail pd = new PaymentDetail();
 
 		Iterator<Cell> cellIterator = row.cellIterator();
 		int cellCounter = 0;
-		while (cellIterator.hasNext() && cellCounter < maxCellRead) {
+		while (cellIterator.hasNext() && cellCounter < cellConfig.getMaxCells()) {
 			Cell cell = cellIterator.next();
-			if (cellCounter == voucherNoCell) {
+			if (cellCounter == cellConfig.getVoucherNoCell()) {
 				pd.setVoucherNo(readVoucherNo(cell));
-			} else if (cellCounter == rcvdDateCell) {
+			} else if (cellCounter == cellConfig.getRcvdDateCell()) {
 				pd.setPaymentDate(readDate(cell));
-			} else if (cellCounter == amountCell) {
+			} else if (cellCounter == cellConfig.getAmountCell()) {
 				pd.setAmount(readAmount(cell));
-			} else if (cellCounter == chequeNoCell) {
+			} else if (cellCounter == cellConfig.getChequeNoCell()) {
 				pd.setCheckNo(readCheckNo(cell));
-			} else if (cellCounter == flatNoCell) {
+			} else if (cellCounter == cellConfig.getFlatNoCell()) {
 				pd.setFlatNo(readFlatNo(cell));
 			}
 			cellCounter++;

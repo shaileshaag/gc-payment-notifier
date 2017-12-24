@@ -21,8 +21,8 @@ import com.gc.component.payment.PaymentNotificationTableColCheckboxDecider;
 import com.gc.component.pending.PendingNotificationTab;
 import com.gc.component.pending.PendingNotificationTableColCheckboxDecider;
 import com.gc.service.EmailNotificationsSender;
-import com.gc.service.MemberDetailsReader;
 import com.gc.service.SmsNotificationsSender;
+import com.gc.service.member.MemberDetailsReader;
 import com.gc.service.payment.PaymentDetailsReader;
 import com.gc.service.payment.PaymentNotificationsLoader;
 import com.gc.service.pending.PendingDetailsReader;
@@ -31,8 +31,11 @@ import com.gc.util.GcEmailSender;
 import com.gc.util.GcSmsSender;
 import com.gc.vo.EmailNotificationProperties;
 import com.gc.vo.SmsNotificationProperties;
+import com.gc.vo.member.MemberSheetConfig;
 import com.gc.vo.payment.PaymentNotification;
+import com.gc.vo.payment.PaymentSheetConfig;
 import com.gc.vo.pending.PendingNotification;
+import com.gc.vo.pending.PendingSheetConfig;
 
 @Configuration
 public class PanelConfig {
@@ -63,9 +66,15 @@ public class PanelConfig {
 		return new RestTemplate();
 	}
 
+	@ConfigurationProperties(prefix = "member-details.sheet")
+	@Bean
+	public MemberSheetConfig memberSheetConfig() {
+		return new MemberSheetConfig();
+	}
+
 	@Bean
 	public MemberDetailsReader memberDetailsReader() {
-		return new MemberDetailsReader();
+		return new MemberDetailsReader(memberSheetConfig());
 	}
 
 	@Bean
@@ -91,8 +100,14 @@ public class PanelConfig {
 	}
 
 	@Bean
+	@ConfigurationProperties(prefix = "payment-details.sheet")
+	public PaymentSheetConfig paymentSheetConfig() {
+		return new PaymentSheetConfig();
+	}
+
+	@Bean
 	public PaymentDetailsReader paymentDetailsReader() {
-		return new PaymentDetailsReader();
+		return new PaymentDetailsReader(paymentSheetConfig());
 	}
 
 	@Bean(initMethod = "init")
@@ -163,9 +178,15 @@ public class PanelConfig {
 				PendingNotification.HEADERS);
 	}
 
+	@ConfigurationProperties(prefix = "pending-details.sheet")
+	@Bean
+	public PendingSheetConfig pendingSheetConfig() {
+		return new PendingSheetConfig();
+	}
+
 	@Bean
 	public PendingDetailsReader pendingDetailsReader() {
-		return new PendingDetailsReader();
+		return new PendingDetailsReader(pendingSheetConfig());
 	}
 
 	@Bean
