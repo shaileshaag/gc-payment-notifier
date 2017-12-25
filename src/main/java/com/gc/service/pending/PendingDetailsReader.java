@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -34,23 +34,24 @@ public class PendingDetailsReader {
 	public Map<String, List<PendingDetail>> read(File memberPaymentsFile, Date pendingSince)
 			throws FileNotFoundException, IOException {
 		MultiValueMap<String, PendingDetail> returnValue = new LinkedMultiValueMap<>();
-		HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(memberPaymentsFile));
-		HSSFSheet sheet = wb.getSheetAt(0);
-		Iterator<Row> rows = sheet.rowIterator();
-		for (int i = 0; i < pendingSheetConfig.getSkipRows(); i++) {
-			rows.next();
-		}
-		while (rows.hasNext()) {
-			HSSFRow row = (HSSFRow) rows.next();
-			PendingDetail pd = buildPaymentDetail(row, pendingSince);
-			if (StringUtils.isNotBlank(pd.getFlatNo())) {
-				returnValue.add(pd.getFlatNo(), pd);
+		try (XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(memberPaymentsFile))) {
+			XSSFSheet sheet = wb.getSheetAt(0);
+			Iterator<Row> rows = sheet.rowIterator();
+			for (int i = 0; i < pendingSheetConfig.getSkipRows(); i++) {
+				rows.next();
+			}
+			while (rows.hasNext()) {
+				XSSFRow row = (XSSFRow) rows.next();
+				PendingDetail pd = buildPaymentDetail(row, pendingSince);
+				if (StringUtils.isNotBlank(pd.getFlatNo())) {
+					returnValue.add(pd.getFlatNo(), pd);
+				}
 			}
 		}
 		return returnValue;
 	}
 
-	private PendingDetail buildPaymentDetail(HSSFRow row, Date pendingSince) {
+	private PendingDetail buildPaymentDetail(XSSFRow row, Date pendingSince) {
 		PendingDetail pd = new PendingDetail();
 		pd.setPendingDate(pendingSince);
 

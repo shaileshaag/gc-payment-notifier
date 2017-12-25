@@ -100,6 +100,14 @@ public class GcEmailSender {
 			}
 		}
 
+		public String getPrintableMessages() {
+			StringBuilder sb = new StringBuilder();
+			for (SimpleMailMessage smm : messages) {
+				sb.append("====").append(smm.toString()).append("====\n");
+			}
+			return sb.toString();
+		}
+
 	}
 
 }

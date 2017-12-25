@@ -48,7 +48,7 @@ public class PanelConfig {
 
 	@Bean(initMethod = "init")
 	public FileLoaderImpl memberDetailsFilePanel() {
-		return new FileLoaderImpl("Member Details File  ", "Load", defaultMemberDetailsFilePath);
+		return new FileLoaderImpl("Member Details File  ", "Load", "xls", defaultMemberDetailsFilePath);
 	}
 
 	@Bean
@@ -112,7 +112,7 @@ public class PanelConfig {
 
 	@Bean(initMethod = "init")
 	public FileLoaderImpl memberPaymentsFilePanel() {
-		return new FileLoaderImpl("Member Payment File", "Load");
+		return new FileLoaderImpl("Member Payment File", "Load", "xls");
 	}
 
 	@Bean(initMethod = "init")
@@ -141,7 +141,7 @@ public class PanelConfig {
 
 	@Bean(initMethod = "init")
 	public FileLoaderImpl memberPendingFilePanel() {
-		return new FileLoaderImpl("Member Pending File", "Load");
+		return new FileLoaderImpl("Member Pending File", "Load", "xlsx");
 	}
 
 	@Bean(initMethod = "init")

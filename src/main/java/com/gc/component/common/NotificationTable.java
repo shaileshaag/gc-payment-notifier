@@ -1,5 +1,7 @@
 package com.gc.component.common;
 
+import java.awt.Color;
+
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -16,6 +18,7 @@ public class NotificationTable extends JTable {
 			Object[] headers) {
 		super(notificationsData, headers);
 		putClientProperty("terminateEditOnFocusLost", true);
+		setGridColor(Color.BLACK);
 		this.checkboxDecider = checkboxDecider;
 	}
 

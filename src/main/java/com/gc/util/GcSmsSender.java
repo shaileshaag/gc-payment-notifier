@@ -126,6 +126,14 @@ public class GcSmsSender {
 			}
 		}
 
+		public String getPrintableMessages() {
+			StringBuilder sb = new StringBuilder();
+			for (Map<String, String> smm : messages) {
+				sb.append("====").append(smm).append("====\n");
+			}
+			return sb.toString();
+		}
+
 	}
 
 }

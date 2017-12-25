@@ -26,6 +26,8 @@ public class FileLoaderImpl implements FileProvider, ComponentGroupPanel, Action
 
 	private final String buttonText;
 
+	private final String fileExtension;
+
 	private File file;
 
 	private JLabel fileNameLabel;
@@ -38,13 +40,14 @@ public class FileLoaderImpl implements FileProvider, ComponentGroupPanel, Action
 
 	private JFrame parentFrame;
 
-	public FileLoaderImpl(String labelName, String buttonText) {
-		this(labelName, buttonText, null);
+	public FileLoaderImpl(String labelName, String buttonText, String fileExtension) {
+		this(labelName, buttonText, fileExtension, null);
 	}
 
-	public FileLoaderImpl(String labelName, String buttonText, String defaultPath) {
+	public FileLoaderImpl(String labelName, String buttonText, String fileExtension, String defaultPath) {
 		this.labelName = labelName;
 		this.buttonText = buttonText;
+		this.fileExtension = fileExtension;
 		if (StringUtils.isNotBlank(defaultPath)) {
 			LOGGER.info("Trying to load default file path '{}' for label '{}'", defaultPath, labelName);
 			File defaultFile = new File(defaultPath);
@@ -68,7 +71,7 @@ public class FileLoaderImpl implements FileProvider, ComponentGroupPanel, Action
 			fileLabel = new JLabel(file.getAbsolutePath());
 		}
 		fileChooser = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("xls Files", "xls");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("xls Files", fileExtension);
 		fileChooser.setFileFilter(filter);
 		fileChooser.setAcceptAllFileFilterUsed(false);
 	}
