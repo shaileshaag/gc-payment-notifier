@@ -12,6 +12,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 import com.gc.component.common.LoginDialog;
+import com.gc.component.common.NotificationTableColumnCheckboxDecider;
 import com.gc.component.common.SendNotificationsProgress;
 import com.gc.service.EmailNotificationsSender;
 import com.gc.service.SmsNotificationsSender;
@@ -35,14 +36,17 @@ public class NotificationPanelListener implements TableModelListener, ActionList
 
 	private final JTable table;
 
+	private final NotificationTableColumnCheckboxDecider checkboxDecider;
+
 	public NotificationPanelListener(JFrame parentFrame, List<? extends Notification> notifications,
 			EmailNotificationsSender emailNotificationSender, SmsNotificationsSender smsNotificationSender,
-			JTable table) {
+			JTable table, NotificationTableColumnCheckboxDecider checkboxDecider) {
 		this.notifications = notifications;
 		this.emailNotificationSender = emailNotificationSender;
 		this.smsNotificationSender = smsNotificationSender;
 		this.parentFrame = parentFrame;
 		this.table = table;
+		this.checkboxDecider = checkboxDecider;
 	}
 
 	@Override
@@ -70,7 +74,7 @@ public class NotificationPanelListener implements TableModelListener, ActionList
 			for (int i = 0; i < notifications.size(); i++) {
 				Notification notification = notifications.get(i);
 				if (notification.getMemberDetail().canSendEmail()) {
-					table.setValueAt(isSelected, i, 4);
+					table.setValueAt(isSelected, i, checkboxDecider.getEmailColumnNumber());
 				}
 			}
 			table.repaint();
@@ -80,7 +84,7 @@ public class NotificationPanelListener implements TableModelListener, ActionList
 			for (int i = 0; i < notifications.size(); i++) {
 				Notification notification = notifications.get(i);
 				if (notification.getMemberDetail().canSendSMS()) {
-					table.setValueAt(isSelected, i, 5);
+					table.setValueAt(isSelected, i, checkboxDecider.getSmsColumnNumber());
 				}
 			}
 			table.repaint();
@@ -94,9 +98,9 @@ public class NotificationPanelListener implements TableModelListener, ActionList
 		int column = e.getColumn();
 		Boolean value = (Boolean) tableModel.getValueAt(row, column);
 		Notification changedNotification = notifications.get(row);
-		if (column == 4) {
+		if (column == checkboxDecider.getEmailColumnNumber()) {
 			changedNotification.setSendEmail(value);
-		} else if (column == 5) {
+		} else if (column == checkboxDecider.getSmsColumnNumber()) {
 			changedNotification.setSendSms(value);
 		}
 	}

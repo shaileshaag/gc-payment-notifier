@@ -9,4 +9,14 @@ public class PendingNotificationTableColCheckboxDecider implements NotificationT
 		return (column == 2 || column == 3);
 	}
 
+	@Override
+	public int getEmailColumnNumber() {
+		return 2;
+	}
+
+	@Override
+	public int getSmsColumnNumber() {
+		return 3;
+	}
+
 }

@@ -9,4 +9,14 @@ public class PaymentNotificationTableColCheckboxDecider implements NotificationT
 		return (column == 4 || column == 5);
 	}
 
+	@Override
+	public int getEmailColumnNumber() {
+		return 4;
+	}
+
+	@Override
+	public int getSmsColumnNumber() {
+		return 5;
+	}
+
 }

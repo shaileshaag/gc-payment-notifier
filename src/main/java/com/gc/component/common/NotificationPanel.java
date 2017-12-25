@@ -103,7 +103,7 @@ public class NotificationPanel implements ComponentGroupPanel, NotificationRecei
 			table.setFillsViewportHeight(true);
 			TableModel tableModel = table.getModel();
 			NotificationPanelListener npl = new NotificationPanelListener(parentFrame, notifications,
-					emailNotificationSender, smsNotificationSender, table);
+					emailNotificationSender, smsNotificationSender, table, checkboxDecider);
 			tableModel.addTableModelListener(npl);
 			sendButton.addActionListener(npl);
 			sendButton.setEnabled(true);
