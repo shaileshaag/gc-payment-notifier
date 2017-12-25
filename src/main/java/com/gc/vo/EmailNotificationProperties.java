@@ -4,6 +4,10 @@ public class EmailNotificationProperties {
 
 	private boolean enabled;
 
+	private String replyTo;
+
+	private String ccTo;
+
 	private String subject;
 
 	private BodyProperties body;
@@ -30,6 +34,22 @@ public class EmailNotificationProperties {
 
 	public void setBody(BodyProperties body) {
 		this.body = body;
+	}
+
+	public String getReplyTo() {
+		return replyTo;
+	}
+
+	public void setReplyTo(String replyTo) {
+		this.replyTo = replyTo;
+	}
+
+	public String getCcTo() {
+		return ccTo;
+	}
+
+	public void setCcTo(String ccTo) {
+		this.ccTo = ccTo;
 	}
 
 	public static class BodyProperties {

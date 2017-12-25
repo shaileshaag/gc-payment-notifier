@@ -83,10 +83,12 @@ public class GcEmailSender {
 			return messages.size();
 		}
 
-		public void addMessage(String to, String subject, String body) {
+		public void addMessage(String to, String replyTo, String ccTo, String subject, String body) {
 			SimpleMailMessage message = new SimpleMailMessage();
 			message.setSubject(subject);
 			message.setFrom(emailId);
+			message.setReplyTo(replyTo);
+			message.setCc(ccTo);
 			message.setTo(to);
 			message.setText(body);
 			messages.add(message);

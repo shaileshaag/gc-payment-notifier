@@ -14,9 +14,12 @@ import javax.swing.table.TableModel;
 import com.gc.component.common.LoginDialog;
 import com.gc.component.common.NotificationTableColumnCheckboxDecider;
 import com.gc.component.common.SendNotificationsProgress;
+import com.gc.component.common.SimpleLoginDialog;
+import com.gc.component.common.SingleWindowLoginDialog;
 import com.gc.service.EmailNotificationsSender;
 import com.gc.service.SmsNotificationsSender;
 import com.gc.vo.Notification;
+import com.gc.vo.SingleWindowLogin;
 
 public class NotificationPanelListener implements TableModelListener, ActionListener {
 
@@ -38,35 +41,31 @@ public class NotificationPanelListener implements TableModelListener, ActionList
 
 	private final NotificationTableColumnCheckboxDecider checkboxDecider;
 
+	private final SingleWindowLogin singleWindowLogin;
+
 	public NotificationPanelListener(JFrame parentFrame, List<? extends Notification> notifications,
 			EmailNotificationsSender emailNotificationSender, SmsNotificationsSender smsNotificationSender,
-			JTable table, NotificationTableColumnCheckboxDecider checkboxDecider) {
+			JTable table, NotificationTableColumnCheckboxDecider checkboxDecider, SingleWindowLogin singleWindowLogin) {
 		this.notifications = notifications;
 		this.emailNotificationSender = emailNotificationSender;
 		this.smsNotificationSender = smsNotificationSender;
 		this.parentFrame = parentFrame;
 		this.table = table;
 		this.checkboxDecider = checkboxDecider;
+		this.singleWindowLogin = singleWindowLogin;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (SEND_NOTIFICATION_ACTION_COMMAND == e.getActionCommand()) {
-			LoginDialog ld = new LoginDialog(parentFrame);
-			ld.setVisible(true);
+			LoginDialog ld = null;
+			if (singleWindowLogin.isEnabled()) {
+				ld = new SingleWindowLoginDialog(parentFrame, singleWindowLogin);
+			} else {
+				ld = new SimpleLoginDialog(parentFrame);
+			}
 			if (ld.isSucceeded()) {
-				SendNotificationsProgress snp = new SendNotificationsProgress(parentFrame);
-				ProgressListener emailProgressListener = snp.createProgressListener("Sent Emails");
-				ProgressListener smsProgressListener = snp.createProgressListener("Sent SMS");
-				Runnable emailSenderRunnable = () -> {
-					emailNotificationSender.send(ld.getEmailUsername(), ld.getEmailPassword(), notifications,
-							emailProgressListener);
-					smsNotificationSender.send(ld.getSmsUsername(), ld.getSmsPassword(), notifications,
-							smsProgressListener);
-				};
-				snp.addProcessOnLoad(emailSenderRunnable);
-				snp.init();
-				snp.setVisible(true);
+				sendNotifications(ld);
 			}
 		} else if (SELECT_ALL_EMAILS_ACTION_COMMAND == e.getActionCommand()) {
 			JCheckBox ch = (JCheckBox) e.getSource();
@@ -103,6 +102,23 @@ public class NotificationPanelListener implements TableModelListener, ActionList
 		} else if (column == checkboxDecider.getSmsColumnNumber()) {
 			changedNotification.setSendSms(value);
 		}
+	}
+
+	private void sendNotifications(LoginDialog ld) {
+		SendNotificationsProgress snp = new SendNotificationsProgress(parentFrame);
+		ProgressListener emailProgressListener = snp.createProgressListener("Sent Emails");
+		ProgressListener smsProgressListener = snp.createProgressListener("Sent SMS");
+		String emailUser = ld.getEmailUsername();
+		String emailPassword = ld.getEmailPassword();
+		String smsUser = ld.getSmsUsername();
+		String smsPassword = ld.getSmsPassword();
+		Runnable emailSenderRunnable = () -> {
+			emailNotificationSender.send(emailUser, emailPassword, notifications, emailProgressListener);
+			smsNotificationSender.send(smsUser, smsPassword, notifications, smsProgressListener);
+		};
+		snp.addProcessOnLoad(emailSenderRunnable);
+		snp.init();
+		snp.setVisible(true);
 	}
 
 }

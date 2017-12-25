@@ -17,6 +17,7 @@ import com.gc.provider.NotificationReceiver;
 import com.gc.service.EmailNotificationsSender;
 import com.gc.service.SmsNotificationsSender;
 import com.gc.vo.Notification;
+import com.gc.vo.SingleWindowLogin;
 
 public class NotificationPanel implements ComponentGroupPanel, NotificationReceiver {
 
@@ -27,6 +28,8 @@ public class NotificationPanel implements ComponentGroupPanel, NotificationRecei
 	private final SmsNotificationsSender smsNotificationSender;
 
 	private final NotificationTableColumnCheckboxDecider checkboxDecider;
+
+	private final SingleWindowLogin singleWindowLogin;
 
 	public final String[] headers;
 
@@ -42,12 +45,13 @@ public class NotificationPanel implements ComponentGroupPanel, NotificationRecei
 
 	public NotificationPanel(String sendNotificationsButtonText, EmailNotificationsSender emailNotificationSender,
 			SmsNotificationsSender smsNotificationSender, NotificationTableColumnCheckboxDecider checkboxDecider,
-			String[] headers) {
+			String[] headers, SingleWindowLogin singleWindowLogin) {
 		this.sendNotificationsButtonText = sendNotificationsButtonText;
 		this.emailNotificationSender = emailNotificationSender;
 		this.smsNotificationSender = smsNotificationSender;
 		this.checkboxDecider = checkboxDecider;
 		this.headers = headers;
+		this.singleWindowLogin = singleWindowLogin;
 	}
 
 	public void init() {
@@ -103,7 +107,7 @@ public class NotificationPanel implements ComponentGroupPanel, NotificationRecei
 			table.setFillsViewportHeight(true);
 			TableModel tableModel = table.getModel();
 			NotificationPanelListener npl = new NotificationPanelListener(parentFrame, notifications,
-					emailNotificationSender, smsNotificationSender, table, checkboxDecider);
+					emailNotificationSender, smsNotificationSender, table, checkboxDecider, singleWindowLogin);
 			tableModel.addTableModelListener(npl);
 			sendButton.addActionListener(npl);
 			sendButton.setEnabled(true);

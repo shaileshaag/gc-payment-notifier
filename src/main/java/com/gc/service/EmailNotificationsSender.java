@@ -35,7 +35,8 @@ public class EmailNotificationsSender {
 		for (Notification n : notifications) {
 			if (n.isSendEmail()) {
 				String body = getBody(n);
-				emailsHolder.addMessage(n.getMemberDetail().getEmail(), emailNotificationProperties.getSubject(), body);
+				emailsHolder.addMessage(n.getMemberDetail().getEmail(), emailNotificationProperties.getReplyTo(),
+						emailNotificationProperties.getCcTo(), emailNotificationProperties.getSubject(), body);
 			}
 		}
 		if (emailNotificationProperties.isEnabled()) {

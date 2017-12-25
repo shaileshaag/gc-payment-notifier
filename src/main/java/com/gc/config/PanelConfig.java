@@ -30,6 +30,7 @@ import com.gc.service.pending.PendingNotificationsLoader;
 import com.gc.util.GcEmailSender;
 import com.gc.util.GcSmsSender;
 import com.gc.vo.EmailNotificationProperties;
+import com.gc.vo.SingleWindowLogin;
 import com.gc.vo.SmsNotificationProperties;
 import com.gc.vo.member.MemberSheetConfig;
 import com.gc.vo.payment.PaymentNotification;
@@ -64,6 +65,12 @@ public class PanelConfig {
 	@Bean
 	public RestTemplate smsRestTemplate() {
 		return new RestTemplate();
+	}
+
+	@Bean
+	@ConfigurationProperties(prefix = "login.single-window")
+	public SingleWindowLogin singleWindowLogin() {
+		return new SingleWindowLogin();
 	}
 
 	@ConfigurationProperties(prefix = "member-details.sheet")
@@ -124,7 +131,7 @@ public class PanelConfig {
 	public NotificationPanel paymentNotificationPanel() {
 		return new NotificationPanel("Send Payment Notifications", paymentEmailNotificationSender(),
 				paymentSmsNotificationSender(), new PaymentNotificationTableColCheckboxDecider(),
-				PaymentNotification.HEADERS);
+				PaymentNotification.HEADERS, singleWindowLogin());
 	}
 
 	@Bean
@@ -175,7 +182,7 @@ public class PanelConfig {
 	public NotificationPanel pendingNotificationPanel() {
 		return new NotificationPanel("Send Pending Notifications", pendingEmailNotificationSender(),
 				pendingSmsNotificationSender(), new PendingNotificationTableColCheckboxDecider(),
-				PendingNotification.HEADERS);
+				PendingNotification.HEADERS, singleWindowLogin());
 	}
 
 	@ConfigurationProperties(prefix = "pending-details.sheet")
