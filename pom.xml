@@ -109,18 +109,18 @@
 			</plugin>
 		</plugins>
 
-		<!--<resources>
+		<resources>
 			<resource>
 				<filtering>true</filtering>
 				<directory>src/main/resources</directory>
 				<excludes>
 					<exclude>*.sh</exclude>
 					<exclude>*.bat</exclude>
-					<exclude>run-script</exclude>
 					<exclude>payment-notifier.properties</exclude>
 				</excludes>
 			</resource>
-		</resources>-->
+		</resources>
+
 	</build>
 
 </project>
