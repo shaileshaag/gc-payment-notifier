@@ -19,7 +19,7 @@ public class PendingNotification extends Notification implements Comparable<Pend
 	public Object[] getTableDataArray() {
 		Object emailEntry = getMemberDetail().canSendEmail() ? Boolean.TRUE : "No Email ID";
 		Object smsEntry = getMemberDetail().canSendSMS() ? Boolean.TRUE : "No Mobile No.";
-		return new Object[] { getMemberDetail().getFlatNo(), pendingDetail.getAmount(), emailEntry, smsEntry };
+		return new Object[] { Formats.presentableFlatNumber(getMemberDetail().getFlatNo()), pendingDetail.getAmount(), emailEntry, smsEntry };
 	}
 
 	public PendingDetail getPendingDetail() {

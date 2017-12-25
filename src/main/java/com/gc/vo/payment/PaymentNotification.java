@@ -27,8 +27,8 @@ public class PaymentNotification extends Notification implements Comparable<Paym
 		if (paymentDetail.getPaymentDate() != null) {
 			paymentDate = Formats.DATE_FORMAT.format(paymentDetail.getPaymentDate());
 		}
-		return new Object[] { getMemberDetail().getFlatNo(), paymentDetail.getVoucherNo(), paymentDetail.getAmount(),
-				paymentDate, emailEntry, smsEntry };
+		return new Object[] { Formats.presentableFlatNumber(getMemberDetail().getFlatNo()),
+				paymentDetail.getVoucherNo(), paymentDetail.getAmount(), paymentDate, emailEntry, smsEntry };
 	}
 
 	public PaymentDetail getPaymentDetail() {

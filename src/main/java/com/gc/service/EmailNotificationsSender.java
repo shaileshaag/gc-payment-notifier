@@ -35,8 +35,9 @@ public class EmailNotificationsSender {
 		for (Notification n : notifications) {
 			if (n.isSendEmail()) {
 				String body = getBody(n);
+				String subject = getSubject(n);
 				emailsHolder.addMessage(n.getMemberDetail().getEmail(), emailNotificationProperties.getReplyTo(),
-						emailNotificationProperties.getCcTo(), emailNotificationProperties.getSubject(), body);
+						emailNotificationProperties.getCcTo(), subject, body);
 			}
 		}
 		if (emailNotificationProperties.isEnabled()) {
@@ -57,6 +58,14 @@ public class EmailNotificationsSender {
 		sb.append(recNot);
 		String thankYouNot = body.getThankYouNotification();
 		sb.append("\n\n").append(thankYouNot);
+		return replaceTemplate.replace(sb.toString());
+	}
+
+	private String getSubject(Notification n) {
+		StringBuilder sb = new StringBuilder();
+		String subject = emailNotificationProperties.getSubject();
+		StrSubstitutor replaceTemplate = Formats.prepareReplaceTemplate(n);
+		sb.append(subject);
 		return replaceTemplate.replace(sb.toString());
 	}
 

@@ -57,7 +57,7 @@ public class GcSmsSender {
 			sendCounter++;
 			SENT_NOTIF_LOGGER.info("Invoking URL {} with params {}", parameterizedUrl, smm);
 			try {
-				ResponseEntity<String> response = restTemplate.getForEntity(parameterizedUrl, String.class, smm);
+				ResponseEntity<String> response = restTemplate.postForEntity(parameterizedUrl, null, String.class, smm);
 				SENT_NOTIF_LOGGER.info("Sent SMS: {}\nResponse: {}", smm, response);
 				BusinessMantraResponse resp = objectMapper.readValue(response.getBody(), BusinessMantraResponse.class);
 				String smsRespProgress = null;
