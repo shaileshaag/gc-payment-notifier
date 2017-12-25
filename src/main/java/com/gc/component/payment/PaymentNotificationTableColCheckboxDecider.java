@@ -6,7 +6,7 @@ public class PaymentNotificationTableColCheckboxDecider implements NotificationT
 
 	@Override
 	public boolean isCheckBox(int column) {
-		return (column == 4 || column == 5);
+		return (column == getEmailColumnNumber() || column == getSmsColumnNumber());
 	}
 
 	@Override

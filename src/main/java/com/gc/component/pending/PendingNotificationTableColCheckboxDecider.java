@@ -6,7 +6,7 @@ public class PendingNotificationTableColCheckboxDecider implements NotificationT
 
 	@Override
 	public boolean isCheckBox(int column) {
-		return (column == 2 || column == 3);
+		return (column == getEmailColumnNumber() || column == getSmsColumnNumber());
 	}
 
 	@Override
