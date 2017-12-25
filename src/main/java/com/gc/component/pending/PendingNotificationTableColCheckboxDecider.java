@@ -2,12 +2,7 @@ package com.gc.component.pending;
 
 import com.gc.component.common.NotificationTableColumnCheckboxDecider;
 
-public class PendingNotificationTableColCheckboxDecider implements NotificationTableColumnCheckboxDecider {
-
-	@Override
-	public boolean isCheckBox(int column) {
-		return (column == getEmailColumnNumber() || column == getSmsColumnNumber());
-	}
+public class PendingNotificationTableColCheckboxDecider extends NotificationTableColumnCheckboxDecider {
 
 	@Override
 	public int getEmailColumnNumber() {

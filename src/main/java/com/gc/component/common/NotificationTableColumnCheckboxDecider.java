@@ -1,11 +1,13 @@
 package com.gc.component.common;
 
-public interface NotificationTableColumnCheckboxDecider {
+public abstract class NotificationTableColumnCheckboxDecider {
 
-	boolean isCheckBox(int column);
+	public boolean isCheckBox(int column) {
+		return (column == getEmailColumnNumber() || column == getSmsColumnNumber());
+	}
 
-	int getEmailColumnNumber();
+	public abstract int getEmailColumnNumber();
 
-	int getSmsColumnNumber();
+	public abstract int getSmsColumnNumber();
 
 }
