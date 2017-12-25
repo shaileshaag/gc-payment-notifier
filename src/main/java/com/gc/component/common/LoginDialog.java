@@ -17,6 +17,8 @@ import org.springframework.util.StringUtils;
 
 public class LoginDialog extends JDialog implements ActionListener {
 
+	private static final long serialVersionUID = 1L;
+
 	private static final String SEND = "Send";
 
 	private static final String CANCEL = "Cancel";

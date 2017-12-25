@@ -146,7 +146,7 @@ public class TextLocalResponse {
 
 	}
 
-	private static class NumberResponse {
+	public static class NumberResponse {
 
 		private String id;
 
@@ -177,7 +177,7 @@ public class TextLocalResponse {
 
 	}
 
-	private static class NumberErrorWarn {
+	public static class NumberErrorWarn {
 
 		private long code;
 

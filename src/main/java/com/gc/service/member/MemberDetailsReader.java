@@ -30,17 +30,18 @@ public class MemberDetailsReader {
 
 	public List<MemberDetail> read(File memberDetailsFile) throws FileNotFoundException, IOException {
 		List<MemberDetail> returnValue = new ArrayList<>();
-		HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(memberDetailsFile));
-		HSSFSheet sheet = wb.getSheetAt(0);
-		Iterator<Row> rows = sheet.rowIterator();
-		for (int i = 0; i < memberSheetConfig.getSkipRows(); i++) {
-			rows.next();
-		}
-		while (rows.hasNext()) {
-			HSSFRow row = (HSSFRow) rows.next();
-			MemberDetail md = buildMemberDetail(row);
-			if (StringUtils.isNotBlank(md.getFlatNo())) {
-				returnValue.add(md);
+		try (HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(memberDetailsFile))) {
+			HSSFSheet sheet = wb.getSheetAt(0);
+			Iterator<Row> rows = sheet.rowIterator();
+			for (int i = 0; i < memberSheetConfig.getSkipRows(); i++) {
+				rows.next();
+			}
+			while (rows.hasNext()) {
+				HSSFRow row = (HSSFRow) rows.next();
+				MemberDetail md = buildMemberDetail(row);
+				if (StringUtils.isNotBlank(md.getFlatNo())) {
+					returnValue.add(md);
+				}
 			}
 		}
 		return returnValue;

@@ -45,8 +45,8 @@ public class SmsNotificationsSender {
 		if (smsNotificationProperties.isEnabled()) {
 			smsHolder.send();
 		} else {
-			progressListener.intimate(String.format("Prepared %s messages. Sending SMS has been disabled",
-					smsHolder.getMessagesCount()));
+			progressListener.intimate(
+					String.format("Prepared %s messages. Sending SMS has been disabled", smsHolder.getMessagesCount()));
 			LOGGER.info("Sending SMS has been disabled");
 			LOGGER.info(smsHolder.getPrintableMessages());
 		}

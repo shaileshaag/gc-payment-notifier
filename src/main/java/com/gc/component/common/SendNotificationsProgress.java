@@ -27,6 +27,8 @@ import com.gc.component.listener.ProgressListener;
 
 public class SendNotificationsProgress extends JDialog implements ActionListener {
 
+	private static final long serialVersionUID = 1L;
+
 	private List<SendNotificationProgressListener> progressListeners;
 
 	private JTextArea taskOutput;

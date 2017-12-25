@@ -35,17 +35,18 @@ public class PaymentDetailsReader {
 
 	public Map<String, List<PaymentDetail>> read(File memberPaymentsFile) throws FileNotFoundException, IOException {
 		MultiValueMap<String, PaymentDetail> returnValue = new LinkedMultiValueMap<>();
-		HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(memberPaymentsFile));
-		HSSFSheet sheet = wb.getSheetAt(0);
-		Iterator<Row> rows = sheet.rowIterator();
-		for (int i = 0; i < paymentSheetConfig.getSkipRows(); i++) {
-			rows.next();
-		}
-		while (rows.hasNext()) {
-			HSSFRow row = (HSSFRow) rows.next();
-			PaymentDetail pd = buildPaymentDetail(row);
-			if (StringUtils.isNotBlank(pd.getFlatNo())) {
-				returnValue.add(pd.getFlatNo(), pd);
+		try (HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(memberPaymentsFile))) {
+			HSSFSheet sheet = wb.getSheetAt(0);
+			Iterator<Row> rows = sheet.rowIterator();
+			for (int i = 0; i < paymentSheetConfig.getSkipRows(); i++) {
+				rows.next();
+			}
+			while (rows.hasNext()) {
+				HSSFRow row = (HSSFRow) rows.next();
+				PaymentDetail pd = buildPaymentDetail(row);
+				if (StringUtils.isNotBlank(pd.getFlatNo())) {
+					returnValue.add(pd.getFlatNo(), pd);
+				}
 			}
 		}
 		return returnValue;

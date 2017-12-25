@@ -34,8 +34,6 @@ public class DatePickerPanel implements ComponentGroupPanel, DateProvider {
 
 	private JLabel emptyLabel;
 
-	private JFrame parentFrame;
-
 	public DatePickerPanel(String datePattern, String labelName) {
 		dateFormat = new SimpleDateFormat(datePattern);
 		this.labelName = labelName;
@@ -104,7 +102,6 @@ public class DatePickerPanel implements ComponentGroupPanel, DateProvider {
 
 	@Override
 	public void setParentFrame(JFrame parentFrame) {
-		this.parentFrame = parentFrame;
 	}
 
 }

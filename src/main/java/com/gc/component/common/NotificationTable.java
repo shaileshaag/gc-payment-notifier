@@ -12,7 +12,7 @@ public class NotificationTable extends JTable {
 
 	private final NotificationTableColumnCheckboxDecider checkboxDecider;
 
-	private Class editingClass;
+	private Class<?> editingClass;
 
 	public NotificationTable(NotificationTableColumnCheckboxDecider checkboxDecider, final Object[][] notificationsData,
 			Object[] headers) {
@@ -27,7 +27,7 @@ public class NotificationTable extends JTable {
 		editingClass = null;
 		int modelColumn = convertColumnIndexToModel(column);
 		if (checkboxDecider.isCheckBox(modelColumn)) {
-			Class rowClass = getModel().getValueAt(row, modelColumn).getClass();
+			Class<?> rowClass = getModel().getValueAt(row, modelColumn).getClass();
 			return getDefaultRenderer(rowClass);
 		} else {
 			return super.getCellRenderer(row, column);
@@ -60,7 +60,7 @@ public class NotificationTable extends JTable {
 	}
 
 	@Override
-	public Class getColumnClass(int column) {
+	public Class<?> getColumnClass(int column) {
 		return editingClass != null ? editingClass : super.getColumnClass(column);
 	}
 
