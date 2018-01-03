@@ -12,8 +12,8 @@ import com.gc.util.Formats;
 import com.gc.util.GcSmsSender;
 import com.gc.util.GcSmsSender.SessionSmsHolder;
 import com.gc.vo.Notification;
-import com.gc.vo.SmsNotificationProperties;
-import com.gc.vo.SmsNotificationProperties.BodyProperties;
+import com.gc.vo.conf.SmsNotificationProperties;
+import com.gc.vo.conf.SmsNotificationProperties.BodyProperties;
 
 public class SmsNotificationsSender {
 

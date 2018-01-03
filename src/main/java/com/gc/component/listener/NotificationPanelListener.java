@@ -19,7 +19,7 @@ import com.gc.component.common.SingleWindowLoginDialog;
 import com.gc.service.notification.EmailNotificationsSender;
 import com.gc.service.notification.SmsNotificationsSender;
 import com.gc.vo.Notification;
-import com.gc.vo.SingleWindowLogin;
+import com.gc.vo.conf.SingleWindowLogin;
 
 public class NotificationPanelListener implements TableModelListener, ActionListener {
 

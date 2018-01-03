@@ -12,8 +12,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gc.component.listener.ProgressListener;
-import com.gc.vo.BusinessMantraResponse;
-import com.gc.vo.SmsNotificationProperties;
+import com.gc.vo.conf.SmsNotificationProperties;
+import com.gc.vo.partner.BusinessMantraResponse;
 
 public class GcSmsSender {
 

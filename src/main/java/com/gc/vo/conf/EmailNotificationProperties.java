@@ -1,4 +1,4 @@
-package com.gc.vo;
+package com.gc.vo.conf;
 
 public class EmailNotificationProperties {
 

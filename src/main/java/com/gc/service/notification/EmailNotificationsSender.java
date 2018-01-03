@@ -10,9 +10,9 @@ import com.gc.component.listener.ProgressListener;
 import com.gc.util.Formats;
 import com.gc.util.GcEmailSender;
 import com.gc.util.GcEmailSender.SessionEmailsHolder;
-import com.gc.vo.EmailNotificationProperties;
-import com.gc.vo.EmailNotificationProperties.BodyProperties;
 import com.gc.vo.Notification;
+import com.gc.vo.conf.EmailNotificationProperties;
+import com.gc.vo.conf.EmailNotificationProperties.BodyProperties;
 
 public class EmailNotificationsSender {
 

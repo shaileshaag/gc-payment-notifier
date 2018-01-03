@@ -14,7 +14,7 @@ import javax.swing.JPasswordField;
 
 import org.springframework.util.StringUtils;
 
-import com.gc.vo.SingleWindowLogin;
+import com.gc.vo.conf.SingleWindowLogin;
 
 public class SingleWindowLoginDialog extends JDialog implements ActionListener, LoginDialog {
 

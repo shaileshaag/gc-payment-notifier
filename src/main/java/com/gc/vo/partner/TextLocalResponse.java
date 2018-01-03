@@ -1,4 +1,4 @@
-package com.gc.vo;
+package com.gc.vo.partner;
 
 import java.util.List;
 
