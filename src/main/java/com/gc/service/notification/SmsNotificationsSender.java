@@ -1,4 +1,4 @@
-package com.gc.service;
+package com.gc.service.notification;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;

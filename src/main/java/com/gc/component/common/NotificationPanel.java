@@ -14,8 +14,8 @@ import javax.swing.table.TableModel;
 
 import com.gc.component.listener.NotificationPanelListener;
 import com.gc.provider.NotificationReceiver;
-import com.gc.service.EmailNotificationsSender;
-import com.gc.service.SmsNotificationsSender;
+import com.gc.service.notification.EmailNotificationsSender;
+import com.gc.service.notification.SmsNotificationsSender;
 import com.gc.vo.Notification;
 import com.gc.vo.SingleWindowLogin;
 
