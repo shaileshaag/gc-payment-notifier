@@ -1,7 +1,6 @@
 package com.gc.service.payment;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
@@ -10,17 +9,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.gc.util.Formats;
+import com.gc.util.WorkbookLoader;
 import com.gc.vo.payment.PaymentDetail;
 import com.gc.vo.payment.PaymentSheetConfig;
 import com.gc.vo.payment.PaymentSheetConfig.PaymentSheetCellConfig;
@@ -35,14 +34,14 @@ public class PaymentDetailsReader {
 
 	public Map<String, List<PaymentDetail>> read(File memberPaymentsFile) throws FileNotFoundException, IOException {
 		MultiValueMap<String, PaymentDetail> returnValue = new LinkedMultiValueMap<>();
-		try (HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(memberPaymentsFile))) {
-			HSSFSheet sheet = wb.getSheetAt(0);
+		try (Workbook wb = WorkbookLoader.loadWorkbook(memberPaymentsFile)) {
+			Sheet sheet = wb.getSheetAt(0);
 			Iterator<Row> rows = sheet.rowIterator();
 			for (int i = 0; i < paymentSheetConfig.getSkipRows(); i++) {
 				rows.next();
 			}
 			while (rows.hasNext()) {
-				HSSFRow row = (HSSFRow) rows.next();
+				Row row = rows.next();
 				PaymentDetail pd = buildPaymentDetail(row);
 				if (StringUtils.isNotBlank(pd.getFlatNo())) {
 					returnValue.add(pd.getFlatNo(), pd);
@@ -52,7 +51,7 @@ public class PaymentDetailsReader {
 		return returnValue;
 	}
 
-	private PaymentDetail buildPaymentDetail(HSSFRow row) {
+	private PaymentDetail buildPaymentDetail(Row row) {
 		PaymentSheetCellConfig cellConfig = paymentSheetConfig.getCell();
 		PaymentDetail pd = new PaymentDetail();
 
@@ -82,11 +81,12 @@ public class PaymentDetailsReader {
 	}
 
 	private Date readDate(Cell cell) {
-		if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+
+		if (cell.getCellTypeEnum() == CellType.NUMERIC) {
 			if (HSSFDateUtil.isCellDateFormatted(cell)) {
 				return cell.getDateCellValue();
 			}
-		} else if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+		} else if (cell.getCellTypeEnum() == CellType.STRING) {
 			String cellValue = cell.getStringCellValue();
 			if (StringUtils.isNotBlank(cellValue)) {
 				return Formats.interpretDate(cellValue);
@@ -109,9 +109,9 @@ public class PaymentDetailsReader {
 	}
 
 	private String readNonBlankString(Cell cell) {
-		if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+		if (cell.getCellTypeEnum() == CellType.NUMERIC) {
 			return Formats.PHONE_NUMBER_FORMATTER.format(cell.getNumericCellValue());
-		} else if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+		} else if (cell.getCellTypeEnum() == CellType.STRING) {
 			String stringCellValue = cell.getStringCellValue();
 			if (StringUtils.isNotBlank(stringCellValue)) {
 				return stringCellValue.trim();

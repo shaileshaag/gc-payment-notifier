@@ -27,15 +27,19 @@ public class PaymentNotificationTab extends NotificationTab implements ActionLis
 
 	private final ComponentGroupPanel fromDatePickerPanel;
 
+	private final ComponentGroupPanel toDatePickerPanel;
+
 	private final ComponentGroupPanel notificationPanel;
 
 	private final PaymentNotificationsLoader notificationsLoader;
 
 	public PaymentNotificationTab(ComponentGroupPanel memberPaymentsFilePanel, ComponentGroupPanel fromDatePickerPanel,
-			ComponentGroupPanel notificationPanel, PaymentNotificationsLoader notificationsLoader) {
+			ComponentGroupPanel toDatePickerPanel, ComponentGroupPanel notificationPanel,
+			PaymentNotificationsLoader notificationsLoader) {
 		super();
 		this.memberPaymentsFilePanel = memberPaymentsFilePanel;
 		this.fromDatePickerPanel = fromDatePickerPanel;
+		this.toDatePickerPanel = toDatePickerPanel;
 		this.notificationPanel = notificationPanel;
 		this.notificationsLoader = notificationsLoader;
 	}
@@ -49,12 +53,17 @@ public class PaymentNotificationTab extends NotificationTab implements ActionLis
 
 		tabbedGroupLayout.setHorizontalGroup(tabbedGroupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(memberPaymentsFilePanel.getHorizontalComponents(tabbedGroupLayout))
-				.addGroup(fromDatePickerPanel.getHorizontalComponents(tabbedGroupLayout))
+				.addGroup(tabbedGroupLayout.createSequentialGroup()
+						.addGroup(fromDatePickerPanel.getHorizontalComponents(tabbedGroupLayout))
+						.addGroup(toDatePickerPanel.getHorizontalComponents(tabbedGroupLayout)))
 				.addGroup(tabbedGroupLayout.createSequentialGroup().addGap(30).addComponent(loadNotificationsButton))
 				.addGroup(notificationPanel.getHorizontalComponents(tabbedGroupLayout)));
 		tabbedGroupLayout.setVerticalGroup(tabbedGroupLayout.createSequentialGroup()
 				.addGroup(memberPaymentsFilePanel.getVerticalComponents(tabbedGroupLayout)).addGap(10)
-				.addGroup(fromDatePickerPanel.getVerticalComponents(tabbedGroupLayout)).addGap(10)
+				.addGroup(tabbedGroupLayout.createParallelGroup(Alignment.BASELINE)
+						.addGroup(fromDatePickerPanel.getVerticalComponents(tabbedGroupLayout))
+						.addGroup(toDatePickerPanel.getVerticalComponents(tabbedGroupLayout)))
+				.addGap(10)
 				.addComponent(loadNotificationsButton).addGap(10)
 				.addGroup(notificationPanel.getVerticalComponents(tabbedGroupLayout)));
 	}

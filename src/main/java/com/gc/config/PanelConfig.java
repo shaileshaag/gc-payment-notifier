@@ -29,6 +29,7 @@ import com.gc.service.pending.PendingDetailsReader;
 import com.gc.service.pending.PendingNotificationsLoader;
 import com.gc.util.GcEmailSender;
 import com.gc.util.GcSmsSender;
+import com.gc.util.WorkbookLoader;
 import com.gc.vo.conf.EmailNotificationProperties;
 import com.gc.vo.conf.SingleWindowLogin;
 import com.gc.vo.conf.SmsNotificationProperties;
@@ -47,9 +48,16 @@ public class PanelConfig {
 	@Value("${default.member.file-path:}")
 	private String defaultMemberDetailsFilePath;
 
+	@Value("${default.payment.file-path:}")
+	private String defaultPaymentFilePath;
+
+	@Value("${default.outstanding.file-path:}")
+	private String defaultOutstandingFilePath;
+
 	@Bean(initMethod = "init")
 	public FileLoaderImpl memberDetailsFilePanel() {
-		return new FileLoaderImpl("Member Details File  ", "Load", "xls", defaultMemberDetailsFilePath);
+		return new FileLoaderImpl("Member Details File  ", "Load", defaultMemberDetailsFilePath,
+				WorkbookLoader.XLS_EXTENSION);
 	}
 
 	@Bean
@@ -119,12 +127,18 @@ public class PanelConfig {
 
 	@Bean(initMethod = "init")
 	public FileLoaderImpl memberPaymentsFilePanel() {
-		return new FileLoaderImpl("Member Payment File", "Load", "xls");
+		return new FileLoaderImpl("Member Payment File", "Load", defaultPaymentFilePath, WorkbookLoader.XLS_EXTENSION,
+				WorkbookLoader.XLSX_EXTENSION);
 	}
 
 	@Bean(initMethod = "init")
 	public DatePickerPanel fromDatePickerPanel() {
 		return new DatePickerPanel("dd-MMM-yyyy", "Notifications from");
+	}
+
+	@Bean(initMethod = "init")
+	public DatePickerPanel toDatePickerPanel() {
+		return new DatePickerPanel("dd-MMM-yyyy", "Notifications to");
 	}
 
 	@Bean(initMethod = "init")
@@ -137,22 +151,24 @@ public class PanelConfig {
 	@Bean
 	public PaymentNotificationsLoader paymentNotificationsLoader() {
 		return new PaymentNotificationsLoader(memberDetailsFilePanel(), memberPaymentsFilePanel(),
-				fromDatePickerPanel(), paymentNotificationPanel(), memberDetailsReader(), paymentDetailsReader());
+				fromDatePickerPanel(), toDatePickerPanel(), paymentNotificationPanel(), memberDetailsReader(),
+				paymentDetailsReader());
 	}
 
 	@Bean(initMethod = "init")
 	public NotificationTab paymentNotificationTab() {
-		return new PaymentNotificationTab(memberPaymentsFilePanel(), fromDatePickerPanel(), paymentNotificationPanel(),
-				paymentNotificationsLoader());
+		return new PaymentNotificationTab(memberPaymentsFilePanel(), fromDatePickerPanel(), toDatePickerPanel(),
+				paymentNotificationPanel(), paymentNotificationsLoader());
 	}
 
 	@Bean(initMethod = "init")
 	public FileLoaderImpl memberPendingFilePanel() {
-		return new FileLoaderImpl("Member Pending File", "Load", "xlsx");
+		return new FileLoaderImpl("Member Pending File", "Load", defaultOutstandingFilePath,
+				WorkbookLoader.XLS_EXTENSION, WorkbookLoader.XLSX_EXTENSION);
 	}
 
 	@Bean(initMethod = "init")
-	public DatePickerPanel pendingDatePickerPanel() {
+	public DatePickerPanel pendingFromDatePickerPanel() {
 		return new DatePickerPanel("dd-MMM-yyyy", "Pending payments since");
 	}
 
@@ -199,12 +215,13 @@ public class PanelConfig {
 	@Bean
 	public PendingNotificationsLoader pendingNotificationsLoader() {
 		return new PendingNotificationsLoader(memberDetailsFilePanel(), memberPendingFilePanel(),
-				pendingDatePickerPanel(), pendingNotificationPanel(), memberDetailsReader(), pendingDetailsReader());
+				pendingFromDatePickerPanel(), pendingNotificationPanel(), memberDetailsReader(),
+				pendingDetailsReader());
 	}
 
 	@Bean(initMethod = "init")
 	public NotificationTab pendingNotificationTab() {
-		return new PendingNotificationTab(memberPendingFilePanel(), pendingDatePickerPanel(),
+		return new PendingNotificationTab(memberPendingFilePanel(), pendingFromDatePickerPanel(),
 				pendingNotificationPanel(), pendingNotificationsLoader());
 	}
 

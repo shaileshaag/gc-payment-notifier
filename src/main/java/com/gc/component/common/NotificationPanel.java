@@ -9,6 +9,7 @@ import javax.swing.GroupLayout.Group;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.table.TableModel;
 
@@ -41,6 +42,8 @@ public class NotificationPanel implements ComponentGroupPanel, NotificationRecei
 
 	private JCheckBox selectAllSMS;
 
+	private JLabel countLabel;
+
 	private JFrame parentFrame;
 
 	public NotificationPanel(String sendNotificationsButtonText, EmailNotificationsSender emailNotificationSender,
@@ -61,6 +64,8 @@ public class NotificationPanel implements ComponentGroupPanel, NotificationRecei
 		table.setVisible(false);
 		js = new JScrollPane(table);
 
+		countLabel = new JLabel("Not loaded");
+
 		sendButton = new JButton(sendNotificationsButtonText);
 		sendButton.setEnabled(false);
 		sendButton.setActionCommand(NotificationPanelListener.SEND_NOTIFICATION_ACTION_COMMAND);
@@ -79,6 +84,9 @@ public class NotificationPanel implements ComponentGroupPanel, NotificationRecei
 	public Group getVerticalComponents(GroupLayout groupLayout) {
 		return groupLayout.createSequentialGroup()
 				.addGroup(groupLayout.createParallelGroup().addComponent(selectAllEmail).addComponent(selectAllSMS))
+				.addGap(5)
+				.addComponent(countLabel)
+				.addGap(5)
 				.addComponent(js).addComponent(sendButton);
 	}
 
@@ -86,6 +94,7 @@ public class NotificationPanel implements ComponentGroupPanel, NotificationRecei
 	public Group getHorizontalComponents(GroupLayout groupLayout) {
 		return groupLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
 				.addGroup(groupLayout.createSequentialGroup().addComponent(selectAllEmail).addComponent(selectAllSMS))
+				.addComponent(countLabel)
 				.addComponent(js).addComponent(sendButton);
 	}
 
@@ -117,6 +126,7 @@ public class NotificationPanel implements ComponentGroupPanel, NotificationRecei
 			selectAllSMS.setSelected(true);
 			selectAllSMS.setEnabled(true);
 			selectAllSMS.addActionListener(npl);
+			countLabel.setText(String.format("%d Notifications loaded", notifications.size()));
 		}
 		js.setViewportView(table);
 	}

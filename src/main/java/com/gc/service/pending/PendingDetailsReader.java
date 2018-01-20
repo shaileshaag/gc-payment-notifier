@@ -1,7 +1,6 @@
 package com.gc.service.pending;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
@@ -12,13 +11,13 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.gc.util.Formats;
+import com.gc.util.WorkbookLoader;
 import com.gc.vo.pending.PendingDetail;
 import com.gc.vo.pending.PendingSheetConfig;
 import com.gc.vo.pending.PendingSheetConfig.PendingSheetCellConfig;
@@ -31,17 +30,17 @@ public class PendingDetailsReader {
 		this.pendingSheetConfig = pendingSheetConfig;
 	}
 
-	public Map<String, List<PendingDetail>> read(File memberPaymentsFile, Date pendingSince)
+	public Map<String, List<PendingDetail>> read(File memberOutstandingFile, Date pendingSince)
 			throws FileNotFoundException, IOException {
 		MultiValueMap<String, PendingDetail> returnValue = new LinkedMultiValueMap<>();
-		try (XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(memberPaymentsFile))) {
-			XSSFSheet sheet = wb.getSheetAt(0);
+		try (Workbook wb = WorkbookLoader.loadWorkbook(memberOutstandingFile)) {
+			Sheet sheet = wb.getSheetAt(0);
 			Iterator<Row> rows = sheet.rowIterator();
 			for (int i = 0; i < pendingSheetConfig.getSkipRows(); i++) {
 				rows.next();
 			}
 			while (rows.hasNext()) {
-				XSSFRow row = (XSSFRow) rows.next();
+				Row row = rows.next();
 				PendingDetail pd = buildPaymentDetail(row, pendingSince);
 				if (StringUtils.isNotBlank(pd.getFlatNo())) {
 					returnValue.add(pd.getFlatNo(), pd);
@@ -51,7 +50,7 @@ public class PendingDetailsReader {
 		return returnValue;
 	}
 
-	private PendingDetail buildPaymentDetail(XSSFRow row, Date pendingSince) {
+	private PendingDetail buildPaymentDetail(Row row, Date pendingSince) {
 		PendingDetail pd = new PendingDetail();
 		pd.setPendingDate(pendingSince);
 

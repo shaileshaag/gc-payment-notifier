@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +28,8 @@ public class PaymentNotificationsLoader {
 
 	private final DateProvider fromDatePickerPanel;
 
+	private final DateProvider toDatePickerPanel;
+
 	private final NotificationReceiver notificationPanel;
 
 	private final MemberDetailsReader memberDetailsReader;
@@ -34,11 +37,12 @@ public class PaymentNotificationsLoader {
 	private final PaymentDetailsReader paymentDetailsReader;
 
 	public PaymentNotificationsLoader(FileProvider memberDetailsFilePanel, FileProvider memberPaymentsFilePanel,
-			DateProvider fromDatePickerPanel, NotificationReceiver notificationPanel,
+			DateProvider fromDatePickerPanel, DateProvider toDatePickerPanel, NotificationReceiver notificationPanel,
 			MemberDetailsReader memberDetailsReader, PaymentDetailsReader paymentDetailsReader) {
 		this.memberDetailsFilePanel = memberDetailsFilePanel;
 		this.memberPaymentsFilePanel = memberPaymentsFilePanel;
 		this.fromDatePickerPanel = fromDatePickerPanel;
+		this.toDatePickerPanel = toDatePickerPanel;
 		this.notificationPanel = notificationPanel;
 		this.memberDetailsReader = memberDetailsReader;
 		this.paymentDetailsReader = paymentDetailsReader;
@@ -48,15 +52,24 @@ public class PaymentNotificationsLoader {
 		File memberDetailsFile = memberDetailsFilePanel.getFile();
 		File memberPaymentsFile = memberPaymentsFilePanel.getFile();
 		Date fromDate = fromDatePickerPanel.getDate();
+		Date toDate = toDatePickerPanel.getDate();
+		if (toDate == null) {
+			Calendar calInst = Calendar.getInstance();
+			calInst.set(Calendar.HOUR_OF_DAY, 23);
+			calInst.set(Calendar.MINUTE, 59);
+			calInst.set(Calendar.SECOND, 59);
+			calInst.set(Calendar.MILLISECOND, 999);
+			toDate = calInst.getTime();
+		}
 		validateDetails(memberDetailsFile, memberPaymentsFile, fromDate);
 		List<MemberDetail> members = memberDetailsReader.read(memberDetailsFile);
 		Map<String, List<PaymentDetail>> paymentDetails = paymentDetailsReader.read(memberPaymentsFile);
-		List<PaymentNotification> notifications = buildNotifications(members, paymentDetails, fromDate);
+		List<PaymentNotification> notifications = buildNotifications(members, paymentDetails, fromDate, toDate);
 		notificationPanel.receive(notifications);
 	}
 
 	private List<PaymentNotification> buildNotifications(List<MemberDetail> members,
-			Map<String, List<PaymentDetail>> paymentDetails, Date fromDate) {
+			Map<String, List<PaymentDetail>> paymentDetails, Date fromDate, Date toDate) {
 		List<PaymentNotification> notifications = new ArrayList<>();
 		for (MemberDetail m : members) {
 			String flatNo = m.getFlatNo();
@@ -67,7 +80,8 @@ public class PaymentNotificationsLoader {
 			for (PaymentDetail pd : payments) {
 				if (pd != null) {
 					if ((pd.getPaymentDate() != null
-							&& (pd.getPaymentDate().equals(fromDate) || pd.getPaymentDate().after(fromDate)))) {
+							&& (pd.getPaymentDate().equals(fromDate) || pd.getPaymentDate().after(fromDate)))
+							&& (pd.getPaymentDate().equals(toDate) || pd.getPaymentDate().before(toDate))) {
 						PaymentNotification n = new PaymentNotification();
 						n.setMemberDetail(m);
 						n.setPaymentDetail(pd);

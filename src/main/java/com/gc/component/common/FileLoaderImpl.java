@@ -12,11 +12,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.gc.provider.FileProvider;
+import com.gc.util.WorkbookLoader;
 
 public class FileLoaderImpl implements FileProvider, ComponentGroupPanel, ActionListener {
 
@@ -26,7 +28,7 @@ public class FileLoaderImpl implements FileProvider, ComponentGroupPanel, Action
 
 	private final String buttonText;
 
-	private final String fileExtension;
+	private final String[] fileExtensions;
 
 	private File file;
 
@@ -40,20 +42,26 @@ public class FileLoaderImpl implements FileProvider, ComponentGroupPanel, Action
 
 	private JFrame parentFrame;
 
-	public FileLoaderImpl(String labelName, String buttonText, String fileExtension) {
-		this(labelName, buttonText, fileExtension, null);
+	public FileLoaderImpl(String labelName, String buttonText, String fileExtensions) {
+		this(labelName, buttonText, null, fileExtensions);
 	}
 
-	public FileLoaderImpl(String labelName, String buttonText, String fileExtension, String defaultPath) {
+	public FileLoaderImpl(String labelName, String buttonText, String defaultPath, String... fileExtensions) {
 		this.labelName = labelName;
 		this.buttonText = buttonText;
-		this.fileExtension = fileExtension;
+		this.fileExtensions = fileExtensions;
 		if (StringUtils.isNotBlank(defaultPath)) {
 			LOGGER.info("Trying to load default file path '{}' for label '{}'", defaultPath, labelName);
 			File defaultFile = new File(defaultPath);
 			if (defaultFile.exists() && defaultFile.isFile()) {
-				file = defaultFile;
-				LOGGER.info("Default File '{}' found for label '{}'", defaultFile.getAbsolutePath(), labelName);
+				String extension = FilenameUtils.getExtension(defaultFile.getAbsolutePath());
+				if (WorkbookLoader.XLS_EXTENSION.equalsIgnoreCase(extension)
+						|| WorkbookLoader.XLSX_EXTENSION.equalsIgnoreCase(extension)) {
+					file = defaultFile;
+					LOGGER.info("Default File '{}' found for label '{}'", defaultFile.getAbsolutePath(), labelName);
+				} else {
+					LOGGER.warn("Default file '{}' for label '{}' is not an Excel sheet", defaultFile.getAbsolutePath(), labelName);
+				}
 			} else {
 				LOGGER.warn("Default file '{}' not found for label '{}'", defaultFile.getAbsolutePath(), labelName);
 			}
@@ -71,7 +79,7 @@ public class FileLoaderImpl implements FileProvider, ComponentGroupPanel, Action
 			fileLabel = new JLabel(file.getAbsolutePath());
 		}
 		fileChooser = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("xls Files", fileExtension);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("xls Files", fileExtensions);
 		fileChooser.setFileFilter(filter);
 		fileChooser.setAcceptAllFileFilterUsed(false);
 	}
