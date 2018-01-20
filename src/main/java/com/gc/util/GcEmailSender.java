@@ -38,6 +38,7 @@ public class GcEmailSender {
 		for (SimpleMailMessage smm : messages) {
 			sendCounter++;
 			try {
+				SENT_NOTIF_LOGGER.info("Seding email: {}", smm);
 				javaMailSender.send(smm);
 				SENT_NOTIF_LOGGER.info("Sent email: {}", smm);
 				progressListener.sent(String.format("=====\nEmail sent to %s (%d or %d) with message:\n%s\n=====",
@@ -45,7 +46,7 @@ public class GcEmailSender {
 			} catch (Exception e) {
 				progressListener.sent(String.format("Failed to send email to %s (%d or %d): %s", smm.getTo()[0],
 						sendCounter, messages.size(), e.getCause().getMessage()));
-				LOGGER.error("Error while sending email: {}", smm, e);
+				SENT_NOTIF_LOGGER.error("Error while sending email: {}", smm, e);
 			}
 			try {
 				Thread.sleep(200);

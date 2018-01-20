@@ -3,15 +3,15 @@
 	<variable name="LOG_PATH" value="${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}" />
 	<variable name="rollover.path" value="${LOG_PATH}/rollover" />
 
-	<appender name="payment-notifier-appender"
+	<appender name="application-log-appender"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<encoder>
 			<pattern>%d [%thread] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
-		<file>${LOG_PATH}/payment-notifier.log</file>
+		<file>${LOG_PATH}/application.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>
-				${rollover.path}/payment-notifier.%d{yyyy-MM-dd}.%i.log.gz
+				${rollover.path}/application.%d{yyyy-MM-dd}.%i.log.gz
 			</fileNamePattern>
 			<timeBasedFileNamingAndTriggeringPolicy
 				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
@@ -46,7 +46,7 @@
 	</logger>
 
 	<root level="INFO">
-		<appender-ref ref="payment-notifier-appender" />
+		<appender-ref ref="application-log-appender" />
 	</root>
 
 </configuration>
