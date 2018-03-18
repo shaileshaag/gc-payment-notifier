@@ -87,7 +87,7 @@ public class GcEmailSender {
 			ne.setTo_flat(flatNo);
 			notificationRepository.save(ne);
 		} catch (Exception e) {
-			LOGGER.error("Exception while persisting notification \"flatNo\": {}, \"message\": {}, \"status\": {} to storage", flatNo, message, status, e);
+			LOGGER.error("Exception while persisting EMAIL notification \"flatNo\": {}, \"message\": {}, \"status\": {} to storage", flatNo, message, status, e);
 		}
 	}
 
