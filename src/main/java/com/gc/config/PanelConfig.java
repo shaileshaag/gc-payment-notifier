@@ -3,7 +3,8 @@ package com.gc.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,7 @@ import com.gc.component.payment.PaymentNotificationTab;
 import com.gc.component.payment.PaymentNotificationTableColCheckboxDecider;
 import com.gc.component.pending.PendingNotificationTab;
 import com.gc.component.pending.PendingNotificationTableColCheckboxDecider;
+import com.gc.dao.NotificationRepository;
 import com.gc.service.member.MemberDetailsReader;
 import com.gc.service.notification.EmailNotificationsSender;
 import com.gc.service.notification.SmsNotificationsSender;
@@ -42,8 +44,11 @@ import com.gc.vo.pending.PendingSheetConfig;
 @Configuration
 public class PanelConfig {
 
-	@Autowired
+	@Resource
 	private JavaMailSenderImpl javaMailSender;
+
+	@Resource
+	private 	NotificationRepository notificationRepository;
 
 	@Value("${default.member.file-path:}")
 	private String defaultMemberDetailsFilePath;
@@ -62,12 +67,12 @@ public class PanelConfig {
 
 	@Bean
 	public GcEmailSender gcEmailSender() {
-		return new GcEmailSender(javaMailSender);
+		return new GcEmailSender(javaMailSender, notificationRepository);
 	}
 
 	@Bean
 	public GcSmsSender gcSmsSender() {
-		return new GcSmsSender(smsRestTemplate(), paymentSmsNotificationProperties());
+		return new GcSmsSender(smsRestTemplate(), paymentSmsNotificationProperties(), notificationRepository);
 	}
 
 	@Bean

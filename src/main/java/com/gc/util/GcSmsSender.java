@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gc.component.listener.ProgressListener;
+import com.gc.dao.NotificationRepository;
 import com.gc.vo.conf.SmsNotificationProperties;
 import com.gc.vo.partner.BusinessMantraResponse;
 
@@ -33,14 +34,17 @@ public class GcSmsSender {
 
 	private final RestTemplate restTemplate;
 
+	private NotificationRepository notificationRepository;
+
 	private final ObjectMapper objectMapper;
 
 	private final String parameterizedUrl;
 
 	private final String sender;
 
-	public GcSmsSender(RestTemplate restTemplate, SmsNotificationProperties smsNotificationProperties) {
+	public GcSmsSender(RestTemplate restTemplate, SmsNotificationProperties smsNotificationProperties, NotificationRepository notificationRepository) {
 		this.restTemplate = restTemplate;
+		this.notificationRepository = notificationRepository;
 		this.parameterizedUrl = smsNotificationProperties.getBusinessMantraUrl();
 		this.sender = smsNotificationProperties.getSender();
 		this.objectMapper = new ObjectMapper();

@@ -9,6 +9,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import com.gc.component.listener.ProgressListener;
+import com.gc.dao.NotificationRepository;
 
 public class GcEmailSender {
 
@@ -18,7 +19,9 @@ public class GcEmailSender {
 
 	private final JavaMailSenderImpl javaMailSender;
 
-	public GcEmailSender(JavaMailSenderImpl javaMailSender) {
+	private NotificationRepository notificationRepository;
+
+	public GcEmailSender(JavaMailSenderImpl javaMailSender, NotificationRepository notificationRepository) {
 		this.javaMailSender = javaMailSender;
 	}
 

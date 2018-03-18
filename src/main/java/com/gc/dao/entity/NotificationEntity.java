@@ -16,11 +16,9 @@ public class NotificationEntity {
 
 	private String to_flat;
 
-	private String address;
-
-	private String remote_notif_id;
-
 	private Clob notif_content;
+
+	private Clob notif_response;
 
 	private Timestamp sent_on;
 
@@ -48,28 +46,20 @@ public class NotificationEntity {
 		this.to_flat = to_flat;
 	}
 
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public String getRemote_notif_id() {
-		return remote_notif_id;
-	}
-
-	public void setRemote_notif_id(String remote_notif_id) {
-		this.remote_notif_id = remote_notif_id;
-	}
-
 	public Clob getNotif_content() {
 		return notif_content;
 	}
 
 	public void setNotif_content(Clob notif_content) {
 		this.notif_content = notif_content;
+	}
+
+	public Clob getNotif_response() {
+		return notif_response;
+	}
+
+	public void setNotif_response(Clob notif_response) {
+		this.notif_response = notif_response;
 	}
 
 	public Timestamp getSent_on() {
@@ -84,9 +74,8 @@ public class NotificationEntity {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("NotificationEntity [id=").append(id).append(", notif_type=").append(notif_type)
-				.append(", to_flat=").append(to_flat).append(", address=").append(address).append(", remote_notif_id=")
-				.append(remote_notif_id).append(", notif_content=").append(notif_content).append(", sent_on=")
-				.append(sent_on).append("]");
+				.append(", to_flat=").append(to_flat).append(", notif_content=").append(notif_content)
+				.append(", notif_response=").append(notif_response).append(", sent_on=").append(sent_on).append("]");
 		return builder.toString();
 	}
 
