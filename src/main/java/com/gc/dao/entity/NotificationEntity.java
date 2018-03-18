@@ -1,6 +1,5 @@
 package com.gc.dao.entity;
 
-import java.sql.Clob;
 import java.sql.Timestamp;
 
 import javax.persistence.Entity;
@@ -16,11 +15,13 @@ public class NotificationEntity {
 
 	private String to_flat;
 
-	private Clob notif_content;
+	private String notif_content;
 
-	private Clob notif_response;
+	private String notif_response;
 
 	private Timestamp sent_on;
+
+	private String status;
 
 	public Long getId() {
 		return id;
@@ -46,19 +47,19 @@ public class NotificationEntity {
 		this.to_flat = to_flat;
 	}
 
-	public Clob getNotif_content() {
+	public String getNotif_content() {
 		return notif_content;
 	}
 
-	public void setNotif_content(Clob notif_content) {
+	public void setNotif_content(String notif_content) {
 		this.notif_content = notif_content;
 	}
 
-	public Clob getNotif_response() {
+	public String getNotif_response() {
 		return notif_response;
 	}
 
-	public void setNotif_response(Clob notif_response) {
+	public void setNotif_response(String notif_response) {
 		this.notif_response = notif_response;
 	}
 
@@ -70,12 +71,21 @@ public class NotificationEntity {
 		this.sent_on = sent_on;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("NotificationEntity [id=").append(id).append(", notif_type=").append(notif_type)
 				.append(", to_flat=").append(to_flat).append(", notif_content=").append(notif_content)
-				.append(", notif_response=").append(notif_response).append(", sent_on=").append(sent_on).append("]");
+				.append(", notif_response=").append(notif_response).append(", sent_on=").append(sent_on)
+				.append(", status=").append(status).append("]");
 		return builder.toString();
 	}
 

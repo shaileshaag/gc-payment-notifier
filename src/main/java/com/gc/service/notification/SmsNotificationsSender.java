@@ -36,7 +36,7 @@ public class SmsNotificationsSender {
 			if (n.isSendSms()) {
 				try {
 					String msg = buildSmsMessage(n);
-					smsHolder.addMessage(n.getMemberDetail().getMobile(), msg);
+					smsHolder.addMessage(n.getMemberDetail().getFlatNo(), n.getMemberDetail().getMobile(), msg);
 				} catch (UnsupportedEncodingException e) {
 					LOGGER.error("Could not build message for notification: {}", n);
 				}
