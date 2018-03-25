@@ -1,7 +1,5 @@
 package com.gc.util;
 
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -11,10 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gc.component.listener.ProgressListener;
-import com.gc.dao.NotificationRepository;
-import com.gc.dao.entity.NotificationEntity;
+import com.gc.dao.NotificationRepositoryDao;
 
 public class GcEmailSender {
 
@@ -24,14 +20,11 @@ public class GcEmailSender {
 
 	private final JavaMailSenderImpl javaMailSender;
 
-	private final NotificationRepository notificationRepository;
+	private final NotificationRepositoryDao notificationRepositoryDao;
 
-	private final ObjectMapper objectMapper;
-
-	public GcEmailSender(JavaMailSenderImpl javaMailSender, NotificationRepository notificationRepository) {
+	public GcEmailSender(JavaMailSenderImpl javaMailSender, NotificationRepositoryDao notificationRepositoryHelper) {
 		this.javaMailSender = javaMailSender;
-		this.notificationRepository = notificationRepository;
-		this.objectMapper = new ObjectMapper();
+		this.notificationRepositoryDao = notificationRepositoryHelper;
 	}
 
 	public SessionEmailsHolder getEmailsHolder(ProgressListener progressListener, String emailId, String password) {
@@ -65,7 +58,13 @@ public class GcEmailSender {
 				SENT_NOTIF_LOGGER.error("Error while sending email: {}", smm, e);
 				status = Constants.STATUS_FAILURE;
 			}
-			persistNotification(flatNo, smm, status);
+			try {
+				notificationRepositoryDao.persistNotification(flatNo, smm, status);
+			} catch (Exception e) {
+				LOGGER.error(
+						"Exception while persisting EMAIL notification \"flatNo\": {}, \"message\": {}, \"status\": {} to storage",
+						flatNo, smm, status, e);
+			}
 			try {
 				Thread.sleep(200);
 			} catch (InterruptedException e) {
@@ -74,21 +73,6 @@ public class GcEmailSender {
 		});
 
 		setUsernamePassword(null, null);
-	}
-
-	private void persistNotification(String flatNo, SimpleMailMessage message, String status) {
-		try {
-			String messageString = objectMapper.writeValueAsString(message);
-			NotificationEntity ne = new NotificationEntity();
-			ne.setNotif_content(messageString);
-			ne.setNotif_type("EMAIL");
-			ne.setSent_on(new Timestamp(new Date().getTime()));
-			ne.setStatus(status);
-			ne.setTo_flat(flatNo);
-			notificationRepository.save(ne);
-		} catch (Exception e) {
-			LOGGER.error("Exception while persisting EMAIL notification \"flatNo\": {}, \"message\": {}, \"status\": {} to storage", flatNo, message, status, e);
-		}
 	}
 
 	private void setUsernamePassword(String emailId, String password) {

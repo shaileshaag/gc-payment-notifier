@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,7 +22,7 @@ import com.gc.component.payment.PaymentNotificationTab;
 import com.gc.component.payment.PaymentNotificationTableColCheckboxDecider;
 import com.gc.component.pending.PendingNotificationTab;
 import com.gc.component.pending.PendingNotificationTableColCheckboxDecider;
-import com.gc.dao.NotificationRepository;
+import com.gc.dao.NotificationRepositoryDao;
 import com.gc.service.member.MemberDetailsReader;
 import com.gc.service.notification.EmailNotificationsSender;
 import com.gc.service.notification.SmsNotificationsSender;
@@ -48,7 +49,7 @@ public class PanelConfig {
 	private JavaMailSenderImpl javaMailSender;
 
 	@Resource
-	private 	NotificationRepository notificationRepository;
+	private 	JdbcTemplate jdbcTemplate;
 
 	@Value("${default.member.file-path:}")
 	private String defaultMemberDetailsFilePath;
@@ -66,13 +67,18 @@ public class PanelConfig {
 	}
 
 	@Bean
+	public NotificationRepositoryDao notificationRepositoryDao() {
+		return new NotificationRepositoryDao(jdbcTemplate);
+	}
+
+	@Bean
 	public GcEmailSender gcEmailSender() {
-		return new GcEmailSender(javaMailSender, notificationRepository);
+		return new GcEmailSender(javaMailSender, notificationRepositoryDao());
 	}
 
 	@Bean
 	public GcSmsSender gcSmsSender() {
-		return new GcSmsSender(smsRestTemplate(), paymentSmsNotificationProperties(), notificationRepository);
+		return new GcSmsSender(smsRestTemplate(), paymentSmsNotificationProperties(), notificationRepositoryDao());
 	}
 
 	@Bean

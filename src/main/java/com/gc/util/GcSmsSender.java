@@ -1,20 +1,17 @@
 package com.gc.util;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gc.component.listener.ProgressListener;
-import com.gc.dao.NotificationRepository;
-import com.gc.dao.entity.NotificationEntity;
+import com.gc.dao.NotificationRepositoryDao;
 import com.gc.vo.conf.SmsNotificationProperties;
 import com.gc.vo.partner.BusinessMantraResponse;
 
@@ -36,21 +33,21 @@ public class GcSmsSender {
 
 	private final RestTemplate restTemplate;
 
-	private final NotificationRepository notificationRepository;
-
 	private final ObjectMapper objectMapper;
+
+	private final NotificationRepositoryDao notificationRepositoryDao;
 
 	private final String parameterizedUrl;
 
 	private final String sender;
 
 	public GcSmsSender(RestTemplate restTemplate, SmsNotificationProperties smsNotificationProperties,
-			NotificationRepository notificationRepository) {
+			NotificationRepositoryDao notificationRepositoryDao) {
 		this.restTemplate = restTemplate;
-		this.notificationRepository = notificationRepository;
+		this.notificationRepositoryDao = notificationRepositoryDao;
 		this.parameterizedUrl = smsNotificationProperties.getBusinessMantraUrl();
 		this.sender = smsNotificationProperties.getSender();
-		this.objectMapper = new ObjectMapper();
+		objectMapper = new ObjectMapper();
 	}
 
 	public SessionSmsHolder getSmsHolder(ProgressListener progressListener, String username, String password) {
@@ -68,9 +65,11 @@ public class GcSmsSender {
 			String status = null;
 			SENT_NOTIF_LOGGER.info("Invoking URL {} with params {}", parameterizedUrl, smm);
 			try {
-				ResponseEntity<String> response = restTemplate.postForEntity(parameterizedUrl, null, String.class, smm);
-				SENT_NOTIF_LOGGER.info("Sent SMS: {}\nResponse: {}", smm, response);
-				resp = objectMapper.readValue(response.getBody(), BusinessMantraResponse.class);
+				//ResponseEntity<String> response = restTemplate.postForEntity(parameterizedUrl, null, String.class, smm);
+				//SENT_NOTIF_LOGGER.info("Sent SMS: {}\nResponse: {}", smm, response);
+				//resp = objectMapper.readValue(response.getBody(), BusinessMantraResponse.class);
+				resp = new BusinessMantraResponse();
+				resp.setMessageData(Collections.emptyList());
 				String smsRespProgress = null;
 				if (resp.getMessageData().isEmpty() || resp.getMessageData().get(0).getMessageParts().isEmpty()) {
 					smsRespProgress = String.format(
@@ -93,33 +92,19 @@ public class GcSmsSender {
 				SENT_NOTIF_LOGGER.error("Error while invoking SMS URL: {} with params {}", parameterizedUrl, smm, e);
 				status = Constants.STATUS_FAILURE;
 			}
-			persistNotification(flatNo, smm, status, resp);
+			try {
+			    notificationRepositoryDao.persistNotification(flatNo, smm, status, resp);
+			} catch (Exception e) {
+				LOGGER.error(
+						"Exception while persisting SMS notification \"flatNo\": {}, \"messageParams\": {}, \"status\": {}, \"response\": {} to storage",
+						flatNo, smm, status, resp, e);
+			}
 			try {
 				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				LOGGER.error("Sleeping thread interrupted", e);
 			}
 		});
-	}
-
-	private void persistNotification(String flatNo, Map<String, String> messageParams, String status,
-			BusinessMantraResponse response) {
-		try {
-			String messageString = objectMapper.writeValueAsString(messageParams);
-			String responseString = objectMapper.writeValueAsString(response);
-			NotificationEntity ne = new NotificationEntity();
-			ne.setNotif_content(messageString);
-			ne.setNotif_response(responseString);
-			ne.setNotif_type("SMS");
-			ne.setSent_on(new Timestamp(new Date().getTime()));
-			ne.setStatus(status);
-			ne.setTo_flat(flatNo);
-			notificationRepository.save(ne);
-		} catch (Exception e) {
-			LOGGER.error(
-					"Exception while persisting SMS notification \"flatNo\": {}, \"messageParams\": {}, \"status\": {}, \"response\": {} to storage",
-					flatNo, messageParams, status, response, e);
-		}
 	}
 
 	public class SessionSmsHolder {
